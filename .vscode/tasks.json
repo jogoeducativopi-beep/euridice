@@ -1,0 +1,25 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compilar Allegro",
+            "type": "process",
+            "command": "C:/msys64/ucrt64/bin/gcc.exe",
+            "args": [
+                "-g", "-Wall", "-std=c17",
+                "${workspaceFolder}/main.c",
+                "-o", "${workspaceFolder}/jogo.exe",
+                "-lallegro_primitives",
+                "-lallegro_font",
+                "-lallegro_ttf",
+                "-lallegro_image",
+                "-lallegro_audio",
+                "-lallegro_acodec",
+                "-lallegro_dialog",
+                "-lallegro"
+            ],
+            "problemMatcher": ["$gcc"],
+            "group": { "kind": "build", "isDefault": true }
+        }
+    ]
+}

@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Depurar jogo",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/jogo.exe",
+            "cwd": "${workspaceFolder}",
+            "MIMode": "gdb",
+            "miDebuggerPath": "C:/msys64/ucrt64/bin/gdb.exe",
+            "externalConsole": false,
+            "preLaunchTask": "Compilar Allegro"
+        }
+    ]
+}
