@@ -7,7 +7,7 @@
             "command": "C:/msys64/ucrt64/bin/gcc.exe",
             "args": [
                 "-g", "-Wall", "-std=c17",
-                "${workspaceFolder}/main.c",
+                "${workspaceFolder}/telainicio.c",
                 "-o", "${workspaceFolder}/jogo.exe",
                 "-lallegro_primitives",
                 "-lallegro_font",
