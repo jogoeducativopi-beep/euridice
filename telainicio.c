@@ -70,7 +70,7 @@ int main()
     al_set_window_title(display, "Euridice");
 
     // Carrega a imagem do menu
-    ALLEGRO_BITMAP *fundo = al_load_bitmap("fundo.png");
+    ALLEGRO_BITMAP *fundo = al_load_bitmap("assets/imagens/fundo.png");
     if (!fundo)
     {
         fprintf(stderr, "Nao foi possivel carregar fundo.png.\n");
