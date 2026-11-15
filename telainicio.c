@@ -76,6 +76,17 @@ int main()
         fprintf(stderr, "Nao foi possivel carregar fundo.png.\n");
     }
 
+    // cenario da primeira fase - Egito
+    ALLEGRO_BITMAP *templo = al_load_bitmap("assets/imagens/templo.png");
+
+    if (!templo)
+    {
+        printf("ERRO: O templo nao foi carregado!\n");
+    }
+    else
+    {
+        printf("SUCESSO: O templo foi carregado!\n");
+    }
     // Carrega a música de abertura
     ALLEGRO_SAMPLE *musica = NULL;
 
@@ -203,11 +214,26 @@ int main()
             else if (estado_atual == ESTADO_JOGO)
             {
 
-                // Tela vazia para desenvolver o jogo
-                al_clear_to_color(al_map_rgb(25, 25, 35));
+                // Desenha o templo egipcio
+                // Ps: esse codigo faz carregar a imagem do templo no cenario
+                if (templo)
+                {
+                    al_draw_scaled_bitmap(
+                        templo,
+                        0, 0,
+                        al_get_bitmap_width(templo),
+                        al_get_bitmap_height(templo),
+                        0, 0,
+                        LARGURA_TELA,
+                        ALTURA_TELA,
+                        0);
+                }
+                else
+                {
+                    al_clear_to_color(al_map_rgb(25, 25, 35));
+                }
             }
-
-            al_flip_display();
+            al_flip_display(); // esse comando atualiza a imagem
         }
     }
 
@@ -219,6 +245,12 @@ int main()
     al_destroy_event_queue(event_queue);
     al_destroy_timer(timer);
     al_destroy_display(display);
+
+    // Libera a imagem do templo - Esse comando evita que a imagem ocupa a memória depos que o jogo fechar
+    if (templo)
+    {
+        al_destroy_bitmap(templo);
+    }
 
     // musica
     if (musica)
