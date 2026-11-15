@@ -87,6 +87,21 @@ int main()
     {
         printf("SUCESSO: O templo foi carregado!\n");
     }
+
+    // Adicionando o personagem da primeira fase - Egito
+
+    // Personagem da primeira fase - Egito
+    ALLEGRO_BITMAP *personagem = al_load_bitmap("assets/imagens/personagem.png");
+
+    if (!personagem)
+    {
+        printf("Erro ao carregar personagem.png!\n");
+    }
+    else
+    {
+        printf("Personagem carregada com sucesso!\n");
+    }
+
     // Carrega a música de abertura
     ALLEGRO_SAMPLE *musica = NULL;
 
@@ -227,6 +242,18 @@ int main()
                         LARGURA_TELA,
                         ALTURA_TELA,
                         0);
+
+                    // Adiciona o personagem no templo
+                    if (personagem)
+                    {
+                        al_draw_scaled_bitmap(
+                            personagem,
+                            0, 0,
+                            al_get_bitmap_width(personagem),
+                            al_get_bitmap_height(personagem),
+                            180, 430, 260, 320,
+                            0);
+                    }
                 }
                 else
                 {
@@ -250,6 +277,12 @@ int main()
     if (templo)
     {
         al_destroy_bitmap(templo);
+    }
+
+    // Libera a imagem da personagem
+    if (personagem)
+    {
+        al_destroy_bitmap(personagem);
     }
 
     // musica
