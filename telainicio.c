@@ -2,6 +2,7 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
+#include <allegro5/allegro_primitives.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -20,6 +21,7 @@ int main()
 
     // Inicialização do Allegro
     if (!al_init())
+
     {
         fprintf(stderr, "Falha ao inicializar o Allegro.\n");
         return -1;
@@ -33,6 +35,8 @@ int main()
         fprintf(stderr, "Falha ao inicializar o addon de imagem.\n");
         return -1;
     }
+
+
 
     // Inicialização do áudio
     if (!al_install_audio())
@@ -90,7 +94,6 @@ int main()
     }
 
     // Adicionando o personagem da primeira fase - Egito
-
     // Personagem da primeira fase - Egito
     ALLEGRO_BITMAP *personagem = al_load_bitmap("assets/imagens/personagem.png");
 
@@ -114,6 +117,19 @@ int main()
     {
         printf("Carta carregada com sucesso!\n");
     }
+
+    //  Abrir a carta missão inicial
+    ALLEGRO_BITMAP *carta_aberta = al_load_bitmap("assets/imagens/carta_aberta.png");
+
+    if (!carta_aberta)
+    {
+        printf("Erro ao carregar carta_aberta.png!\n");
+    }
+    else
+    {
+        printf("Carta aberta carregada com sucesso!\n");
+    }
+
 
     // Carrega a música de abertura
     ALLEGRO_SAMPLE *musica = NULL;
@@ -162,9 +178,10 @@ int main()
 
     float tempo_carta = 0; // Movimento da carta
 
+    bool carta_esta_aberta = false; // Esse comando é da abertura e fechamento da carta
+
     al_start_timer(timer);
 
-    // Loop principal
     // Loop principal
     while (running)
     {
@@ -195,23 +212,59 @@ int main()
             }
         }
 
-        // Clique do botão JOGAR
+        // Clique do botão JOGAR e mouse
+
         else if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
         {
-            if (event.mouse.button == 1 &&
-                estado_atual == ESTADO_MENU)
+            if (event.mouse.button == 1)
             {
                 int mx = event.mouse.x;
                 int my = event.mouse.y;
 
-                if (mx >= btn_x &&
-                    mx <= btn_x + btn_largura &&
-                    my >= btn_y &&
-                    my <= btn_y + btn_altura)
+                // Clique do botão JOGAR
+                if (estado_atual == ESTADO_MENU)
                 {
-                    estado_atual = ESTADO_JOGO;
+                    if (mx >= btn_x &&
+                        mx <= btn_x + btn_largura &&
+                        my >= btn_y &&
+                        my <= btn_y + btn_altura)
+                    {
+                        estado_atual = ESTADO_JOGO;
+                        printf("Entrando no jogo...\n");
+                    }
+                }
 
-                    printf("Entrando no jogo...\n");
+                // Clique da carta
+                else if (estado_atual == ESTADO_JOGO && carta)
+                {
+                    if (carta_esta_aberta)
+                    {
+                        // Fecha a carta ao clicar no X
+                        if (mx >= 915 && mx <= 965 &&
+                            my >= 135 && my <= 185)
+                        {
+                            carta_esta_aberta = false;
+                        }
+                    }
+                    else
+                    {
+                        float largura_carta = 150;
+                        float altura_carta = largura_carta *
+                                             al_get_bitmap_height(carta) /
+                                             al_get_bitmap_width(carta);
+
+                        float carta_x = (LARGURA_TELA - largura_carta) / 2;
+                        float carta_y = 510 + sinf(tempo_carta * 2.0f) * 12.0f;
+
+                        if (mx >= carta_x &&
+                            mx <= carta_x + largura_carta &&
+                            my >= carta_y &&
+                            my <= carta_y + altura_carta)
+                        {
+                            carta_esta_aberta = true;
+                            printf("Carta misteriosa aberta!\n");
+                        }
+                    }
                 }
             }
         }
@@ -276,7 +329,6 @@ int main()
                 }
 
                 // Desenho da carta fechada no templo - e a posicao dela
-                // Desenha a carta flutuando no templo
                 if (carta)
                 {
                     float largura_carta = 150;
@@ -286,7 +338,7 @@ int main()
                                          al_get_bitmap_width(carta);
 
                     // Faz a carta subir e descer
-                    float movimento = sinf(tempo_carta * 2.0f) * 12.0f;
+                    float movimento = sinf(tempo_carta * 1.2f) * 8.0f;
 
                     float carta_x = (LARGURA_TELA - largura_carta) / 2;
                     float carta_y = 510 + movimento;
@@ -300,11 +352,31 @@ int main()
                         largura_carta, altura_carta,
                         0);
                 }
-            }
 
+                // Essa estapa mostra a abertura da carta
+                if (carta_esta_aberta && carta_aberta)
+                {
+                    // Escurece o templo
+                    al_draw_filled_rectangle(
+                        0, 0,
+                        LARGURA_TELA, ALTURA_TELA,
+                        al_map_rgba(0, 0, 0, 170));
+
+                    // Mostra a carta aberta no centro
+                    al_draw_scaled_bitmap(
+                        carta_aberta,
+                        0, 0,
+                        al_get_bitmap_width(carta_aberta),
+                        al_get_bitmap_height(carta_aberta),
+                        325, 120, 650, 560,
+                        0);
+                    }
+            
+            }
             al_flip_display(); // esse comando atualiza a imagem
         }
     }
+
     // Liberação dos recursos
     if (fundo)
     {
@@ -332,12 +404,17 @@ int main()
         al_destroy_bitmap(carta);
     }
 
+    // Libera a imagem da carta aberta
+    if (carta_aberta)
+    {
+        al_destroy_bitmap(carta_aberta);
+    }
+   
     // musica
     if (musica)
     {
         al_destroy_sample(musica);
     }
-
     al_uninstall_audio();
     return 0;
 }
