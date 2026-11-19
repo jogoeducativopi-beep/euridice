@@ -12,4 +12,10 @@ void desenha_personagem(void);
 // Libera as imagens da memoria
 void liberar_personagem_mapa(void);
 
+//Guarda quando uma tecla é pressionada
+void personagem_tecla(int tecla, bool pressionada);
+
+//atualiza a possição do personagem
+void atualizar_posicao_personagem(int largura_mapa, int altura_mapa);
+
 #endif // encerra compilação condicional do ifndef

@@ -208,7 +208,15 @@ int main()
             {
                 tempo_carta += 1.0f / 60.0f;
             }
+
+            //Atualizar movimento no mapa
+            if (estado_atual == ESTADO_MAPA)
+            {
+                atualizar_posicao_personagem(LARGURA_TELA, ALTURA_TELA);
+            }
+            
         }
+
 
         else if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
         {
@@ -231,7 +239,24 @@ int main()
                     printf("Entrou no mapa do egito");
                 }
             }
+
+            //Registra a tecla pressionada no mapa
+            if (estado_atual == ESTADO_MAPA)
+            {
+                personagem_tecla(event.keyboard.keycode, true);
+            }
         }
+
+        //impedir o persongem de continuar andando ao soltar a tecla
+        else if (event.type == ALLEGRO_EVENT_KEY_UP)
+        {
+            if (estado_atual == ESTADO_MAPA)
+            {
+                personagem_tecla(event.keyboard.keycode,false);
+            }
+            
+        }
+        
 
         // Clique do botão JOGAR e mouse
 

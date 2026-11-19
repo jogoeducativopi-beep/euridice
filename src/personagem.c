@@ -14,6 +14,9 @@ static float y = 550;
 static float largura = 75;
 static float altura = 50;
 
+//Vetor que guarda o estado das teclas
+static bool teclas[ALLEGRO_KEY_MAX] = {false}; // static vetor restrito aquele arquivo; key max posições que representam as teclas; bool true tecla pressionada, false solta
+
 bool carregar_personagem_mapa(void){
     frente = al_load_bitmap("assets/imagens/personagemFrente.png"); // tenta carregar imagem do disco para memoria
     if (frente == NULL){
@@ -22,6 +25,58 @@ bool carregar_personagem_mapa(void){
     }
     printf("Personagem Carregado");
     return true;
+}
+//Guarda quando uma tecla é pressionada ou solta
+void personagem_tecla(int tecla, bool pressionada){
+    if (tecla>=0 && tecla< ALLEGRO_KEY_MAX)
+    {
+        teclas[tecla] = pressionada;
+    }
+}
+// Atualizar a posição do personagem
+void atualizar_posicao_personagem(int largura_mapa, int altura_mapa){
+    float velocidade = 3;
+    //movimento horizontal
+    if (teclas[ALLEGRO_KEY_RIGHT]) //direita
+    {
+        x += velocidade;
+    }
+    if (teclas[ALLEGRO_KEY_LEFT]) //esquerda
+    {
+        x-=velocidade;
+    }
+
+    //Movimento vertical
+    if (teclas[ALLEGRO_KEY_UP])
+    {
+        y -= velocidade;
+    }
+    if(teclas[ALLEGRO_KEY_DOWN])
+    {
+        y+=velocidade;
+    }
+
+    // Limites horizontais
+    if (x < 0)
+    {
+        x = 0;
+    }
+
+    if (x + largura > largura_mapa)
+    {
+        x = largura_mapa - largura;
+    }
+
+    // Limites verticais
+    if (y < 0)
+    {
+        y = 0;
+    }
+
+    if (y + altura > altura_mapa)
+    {
+        y = altura_mapa - altura;
+    }
 }
 void desenha_personagem(void){
     if (frente != NULL)
