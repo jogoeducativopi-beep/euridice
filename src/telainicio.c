@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "mapa.h"
+#include "personagem.h"
 
 #define LARGURA_TELA 1300
 #define ALTURA_TELA 800
@@ -76,6 +77,11 @@ int main()
     if (!carregar_mapa())
     {
         printf("Erro ao carregar mapa do Egito");
+    }
+    // Carrega personagem do mapa
+    if (!carregar_personagem_mapa())
+    {
+        printf("Falha ao carregar personagem!");
     }
 
     al_set_window_title(display, "Euridice");
@@ -387,10 +393,11 @@ int main()
                         0);
                 }
             }
-            // Desenha o mapa do Egito
+            // Desenha o mapa do Egito e personagem
             else if (estado_atual == ESTADO_MAPA)
             {
                 desenhar_mapa(LARGURA_TELA, ALTURA_TELA);
+                desenha_personagem();
             }
             al_flip_display(); // esse comando atualiza a imagem
         }
@@ -404,6 +411,7 @@ int main()
     al_destroy_event_queue(event_queue);
     al_destroy_timer(timer);
     liberar_mapa();
+    liberar_personagem_mapa();
     al_destroy_display(display);
 
     // Libera a imagem do templo - Esse comando evita que a imagem ocupa a memória depos que o jogo fechar

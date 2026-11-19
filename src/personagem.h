@@ -9,8 +9,6 @@ bool carregar_personagem_mapa(void);
 //desenha o personagem no mapa
 void desenha_personagem(void);
 
-//libera as imagens da memoria
-
 // Libera as imagens da memoria
 void liberar_personagem_mapa(void);
 
