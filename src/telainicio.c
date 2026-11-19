@@ -6,6 +6,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include "mapa.h"
 
 #define LARGURA_TELA 1300
 #define ALTURA_TELA 800
@@ -13,7 +14,8 @@
 typedef enum
 {
     ESTADO_MENU,
-    ESTADO_JOGO
+    ESTADO_JOGO,
+    ESTADO_MAPA
 } EstadoJogo;
 
 int main()
@@ -35,8 +37,6 @@ int main()
         fprintf(stderr, "Falha ao inicializar o addon de imagem.\n");
         return -1;
     }
-
-
 
     // Inicialização do áudio
     if (!al_install_audio())
@@ -70,6 +70,12 @@ int main()
             al_destroy_timer(timer);
 
         return -1;
+    }
+
+    // carrega mapa
+    if (!carregar_mapa())
+    {
+        printf("Erro ao carregar mapa do Egito");
     }
 
     al_set_window_title(display, "Euridice");
@@ -129,7 +135,6 @@ int main()
     {
         printf("Carta aberta carregada com sucesso!\n");
     }
-
 
     // Carrega a música de abertura
     ALLEGRO_SAMPLE *musica = NULL;
@@ -205,10 +210,20 @@ int main()
         }
 
         else if (event.type == ALLEGRO_EVENT_KEY_DOWN)
-        {
+        { // fecha o jogo ao pressionar esc
             if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
             {
                 running = false;
+            }
+            // Precionar espaço com a carta aberta
+            else if (event.keyboard.keycode == ALLEGRO_KEY_SPACE)
+            {
+                if (estado_atual == ESTADO_JOGO && carta_esta_aberta)
+                {
+                    carta_esta_aberta = false;
+                    estado_atual = ESTADO_MAPA;
+                    printf("Entrou no mapa do egito");
+                }
             }
         }
 
@@ -370,8 +385,12 @@ int main()
                         al_get_bitmap_height(carta_aberta),
                         325, 120, 650, 560,
                         0);
-                    }
-            
+                }
+            }
+            // Desenha o mapa do Egito
+            else if (estado_atual == ESTADO_MAPA)
+            {
+                desenhar_mapa(LARGURA_TELA, ALTURA_TELA);
             }
             al_flip_display(); // esse comando atualiza a imagem
         }
@@ -384,6 +403,7 @@ int main()
     }
     al_destroy_event_queue(event_queue);
     al_destroy_timer(timer);
+    liberar_mapa();
     al_destroy_display(display);
 
     // Libera a imagem do templo - Esse comando evita que a imagem ocupa a memória depos que o jogo fechar
@@ -409,7 +429,7 @@ int main()
     {
         al_destroy_bitmap(carta_aberta);
     }
-   
+
     // musica
     if (musica)
     {
