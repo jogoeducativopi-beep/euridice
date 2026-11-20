@@ -3,8 +3,14 @@
 #include <allegro5/allegro_image.h>
 #include "personagem.h"
 
-//Imagem do personagem // Ponteiro para armazenar a imagem do personagem
+//Imagem do personagem // Ponteiro para armazenar a imagem do personagem //posições das imagens
 static ALLEGRO_BITMAP* frente = NULL;
+static ALLEGRO_BITMAP* costa = NULL;
+static ALLEGRO_BITMAP* direita = NULL;
+static ALLEGRO_BITMAP* esquerda = NULL;
+
+//guarda qual imagem sera desenhada//vai apontar qual imagem sera desenhada
+static ALLEGRO_BITMAP* imagemAtual = NULL;
 
 //Posição inicial do personagem no mapa
 static float x = 650;
@@ -19,10 +25,19 @@ static bool teclas[ALLEGRO_KEY_MAX] = {false}; // static vetor restrito aquele a
 
 bool carregar_personagem_mapa(void){
     frente = al_load_bitmap("assets/imagens/personagemFrente.png"); // tenta carregar imagem do disco para memoria
-    if (frente == NULL){
-        printf("Erro em carregar o personagem");
+    costa = al_load_bitmap("assets/imagens/personagemCostas.png");
+    direita = al_load_bitmap("assets/imagens/personagemDireita.png");
+    esquerda = al_load_bitmap("assets/imagens/personagemEsquerda.png");   
+
+    //verifica se todas as imagens foram carregadas
+    if (!frente || !costa || !direita || !esquerda)
+    {
+        printf("Erro ao carregar imagens do personagem!\n");
+        liberar_personagem_mapa();
         return false;
     }
+    //personagem olhando para frente
+    imagemAtual = frente;
     printf("Personagem Carregado");
     return true;
 }
@@ -32,8 +47,30 @@ void personagem_tecla(int tecla, bool pressionada){
     {
         teclas[tecla] = pressionada;
     }
+
+    if (pressionada)
+    {
+        if (tecla == ALLEGRO_KEY_RIGHT)
+        {
+            imagemAtual = direita;
+        }
+        else if (tecla == ALLEGRO_KEY_LEFT)
+        {
+            imagemAtual = esquerda;
+        }
+        else if (tecla == ALLEGRO_KEY_UP)
+        {
+            imagemAtual = costa;
+        }
+        else if (tecla == ALLEGRO_KEY_DOWN)
+        {
+            imagemAtual = frente;
+        }
+    }
+    
 }
-// Atualizar a posição do personagem
+
+// Atualizar a posição do personagem e imagem
 void atualizar_posicao_personagem(int largura_mapa, int altura_mapa){
     float velocidade = 3;
     //movimento horizontal
@@ -79,13 +116,13 @@ void atualizar_posicao_personagem(int largura_mapa, int altura_mapa){
     }
 }
 void desenha_personagem(void){
-    if (frente != NULL)
+    if (imagemAtual != NULL)
     {
         al_draw_scaled_bitmap(
-            frente,
+            imagemAtual,
             0, 0,
-            al_get_bitmap_width(frente),
-            al_get_bitmap_height(frente),
+            al_get_bitmap_width(imagemAtual),
+            al_get_bitmap_height(imagemAtual),
             x, y,
             largura, altura,
             0
@@ -96,7 +133,23 @@ void liberar_personagem_mapa(void){
     if (frente!=NULL)
     {
         al_destroy_bitmap(frente);
-        frente = NULL;
     }
+    if (costa!=NULL)
+    {
+        al_destroy_bitmap(costa);
+    }
+    if (direita!=NULL)
+    {
+        al_destroy_bitmap(direita);
+    }
+    if (esquerda!=NULL)
+    {
+        al_destroy_bitmap(esquerda);
+    }
+    frente = NULL;
+    costa = NULL;
+    direita = NULL;
+    esquerda = NULL;
+    imagemAtual = NULL;
     
 }
