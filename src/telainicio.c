@@ -190,6 +190,7 @@ int main()
 
     bool running = true;
     bool redraw = true;
+    bool mostrar_colisoes = false;
 
     float tempo_carta = 0; // Movimento da carta
 
@@ -248,6 +249,16 @@ int main()
                     estado_atual = ESTADO_MAPA;
                     printf("Entrou no mapa do egito");
                 }
+            }
+        
+            // Liga ou desliga as hitboxes ao apertar F3
+            else if (event.keyboard.keycode == ALLEGRO_KEY_F3
+                    && estado_atual == ESTADO_MAPA)
+            {
+                mostrar_colisoes = !mostrar_colisoes;
+
+                printf("DEBUG COLISOES: %s\n",
+                    mostrar_colisoes ? "LIGADO" : "DESLIGADO");
             }
 
             // Registra a tecla pressionada no mapa
@@ -427,14 +438,40 @@ int main()
                 }
             }
             // Desenha o mapa do Egito e personagem
+            
             else if (estado_atual == ESTADO_MAPA)
             {
-                // Desenha o mapa de acordo com a camera
-                desenhar_mapa(posicaoCameraX(), posicaoCameraY());
+                // Desenha o mapa
+                desenhar_mapa(
+                    posicaoCameraX(),
+                    posicaoCameraY()
+                );
 
-                // Desenha o personagem na posicao correta
-                desenha_personagem(posicaoCameraX(), posicaoCameraY());
+                // Mostra as colisoes dos objetos
+                if (mostrar_colisoes)
+                {
+                    desenhar_colisoes(
+                        posicaoCameraX(),
+                        posicaoCameraY()
+                    );
+                }
+
+                // Desenha o personagem
+                desenha_personagem(
+                    posicaoCameraX(),
+                    posicaoCameraY()
+                );
+
+                // Mostra a hitbox dos pes
+                if (mostrar_colisoes)
+                {
+                    desenhar_colisao_personagem(
+                        posicaoCameraX(),
+                        posicaoCameraY()
+                    );
+                }
             }
+
             al_flip_display(); // esse comando atualiza a imagem
         }
     }

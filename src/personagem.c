@@ -1,3 +1,4 @@
+#include <allegro5/allegro_primitives.h>
 #include <stdio.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
@@ -18,8 +19,8 @@ static float x = 1090;
 static float y = 1390;
 
 // Tamanho do personagem no mapa
-static float largura = 50;
-static float altura = 90;
+static float largura = 60;
+static float altura = 110;
 
 // Vetor que guarda o estado das teclas
 static bool teclas[ALLEGRO_KEY_MAX] = {false}; // static vetor restrito aquele arquivo; key max posições que representam as teclas; bool true tecla pressionada, false solta
@@ -53,19 +54,19 @@ void personagem_tecla(int tecla, bool pressionada)
 
     if (pressionada)
     {
-        if (tecla == ALLEGRO_KEY_RIGHT)
+        if (tecla == ALLEGRO_KEY_RIGHT || tecla == ALLEGRO_KEY_D)
         {
             imagemAtual = direita;
         }
-        else if (tecla == ALLEGRO_KEY_LEFT)
+        else if (tecla == ALLEGRO_KEY_LEFT || tecla == ALLEGRO_KEY_A)
         {
             imagemAtual = esquerda;
         }
-        else if (tecla == ALLEGRO_KEY_UP)
+        else if (tecla == ALLEGRO_KEY_UP || tecla == ALLEGRO_KEY_W)
         {
             imagemAtual = costa;
         }
-        else if (tecla == ALLEGRO_KEY_DOWN)
+        else if (tecla == ALLEGRO_KEY_DOWN || tecla == ALLEGRO_KEY_S)
         {
             imagemAtual = frente;
         }
@@ -82,21 +83,21 @@ void atualizar_posicao_personagem(int largura_mapa, int altura_mapa)
     float yAnterior = y;
 
     // movimento horizontal
-    if (teclas[ALLEGRO_KEY_RIGHT]) // direita
+    if (teclas[ALLEGRO_KEY_RIGHT] || teclas[ALLEGRO_KEY_D]) // direita
     {
         x += velocidade;
     }
-    if (teclas[ALLEGRO_KEY_LEFT]) // esquerda
+    if (teclas[ALLEGRO_KEY_LEFT] || teclas[ALLEGRO_KEY_A]) // esquerda
     {
         x -= velocidade;
     }
 
     // Movimento vertical
-    if (teclas[ALLEGRO_KEY_UP])
+    if (teclas[ALLEGRO_KEY_UP] || teclas[ALLEGRO_KEY_W])
     {
         y -= velocidade;
     }
-    if (teclas[ALLEGRO_KEY_DOWN])
+    if (teclas[ALLEGRO_KEY_DOWN] || teclas[ALLEGRO_KEY_S])
     {
         y += velocidade;
     }
@@ -180,3 +181,29 @@ float personagem_centro_y(void)
     return y + altura / 2;
 }
 // manter ele no centro da camera
+
+//colisão do personagem
+void desenhar_colisao_personagem(float cameraX, float cameraY)
+{
+    // Mesma area utilizada pela funcao de colisao
+    float peX = x + largura * 0.30f - cameraX;
+    float peY = y + altura * 0.80f - cameraY;
+
+    float peLargura = largura * 0.40f;
+    float peAltura = altura * 0.20f;
+
+    al_draw_filled_rectangle(
+        peX, peY,
+        peX + peLargura,
+        peY + peAltura,
+        al_map_rgba(0, 255, 0, 90)
+    );
+
+    al_draw_rectangle(
+        peX, peY,
+        peX + peLargura,
+        peY + peAltura,
+        al_map_rgb(0, 255, 0),
+        2
+    );
+}
