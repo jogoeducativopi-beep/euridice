@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include "mapa.h"
 #include "personagem.h"
+#include "camera.h"
 
 #define LARGURA_TELA 1300
 #define ALTURA_TELA 800
@@ -209,14 +210,20 @@ int main()
                 tempo_carta += 1.0f / 60.0f;
             }
 
-            //Atualizar movimento no mapa
+            // Atualizar movimento no mapa
             if (estado_atual == ESTADO_MAPA)
             {
-                atualizar_posicao_personagem(LARGURA_TELA, ALTURA_TELA);
-            }
-            
-        }
+                // Movimenta a personagem dentro do mundo
+                atualizar_posicao_personagem(LARGURA_MUNDO, ALTURA_MUNDO);
 
+                // Faz a camera acompanhar a personagem
+                atualizar_camera(
+                    personagem_centro_x(),
+                    personagem_centro_y(),
+                    LARGURA_TELA,
+                    ALTURA_TELA);
+            }
+        }
 
         else if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
         {
@@ -240,23 +247,21 @@ int main()
                 }
             }
 
-            //Registra a tecla pressionada no mapa
+            // Registra a tecla pressionada no mapa
             if (estado_atual == ESTADO_MAPA)
             {
                 personagem_tecla(event.keyboard.keycode, true);
             }
         }
 
-        //impedir o persongem de continuar andando ao soltar a tecla
+        // impedir o persongem de continuar andando ao soltar a tecla
         else if (event.type == ALLEGRO_EVENT_KEY_UP)
         {
             if (estado_atual == ESTADO_MAPA)
             {
-                personagem_tecla(event.keyboard.keycode,false);
+                personagem_tecla(event.keyboard.keycode, false);
             }
-            
         }
-        
 
         // Clique do botão JOGAR e mouse
 
@@ -421,8 +426,11 @@ int main()
             // Desenha o mapa do Egito e personagem
             else if (estado_atual == ESTADO_MAPA)
             {
-                desenhar_mapa(LARGURA_TELA, ALTURA_TELA);
-                desenha_personagem();
+                // Desenha o mapa de acordo com a camera
+                desenhar_mapa(posicaoCameraX(), posicaoCameraY());
+
+                // Desenha o personagem na posicao correta
+                desenha_personagem(posicaoCameraX(), posicaoCameraY());
             }
             al_flip_display(); // esse comando atualiza a imagem
         }

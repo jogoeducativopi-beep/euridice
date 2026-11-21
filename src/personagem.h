@@ -7,7 +7,11 @@
 bool carregar_personagem_mapa(void);
 
 //desenha o personagem no mapa
-void desenha_personagem(void);
+void desenha_personagem(float cameraX, float cameraY);
+
+// Consulta o centro do personagem
+float personagem_centro_x(void);
+float personagem_centro_y(void);
 
 // Libera as imagens da memoria
 void liberar_personagem_mapa(void);

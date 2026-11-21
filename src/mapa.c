@@ -17,7 +17,8 @@ bool carregar_mapa(void){
     printf("Mapa Carregado");
     return true;
 }
-void desenhar_mapa(int largura, int altura){
+void desenhar_mapa(float cameraX, float cameraY)
+{
     if (mapa != NULL)
     {
         al_draw_scaled_bitmap(
@@ -25,8 +26,12 @@ void desenhar_mapa(int largura, int altura){
             0, 0,
             al_get_bitmap_width(mapa),
             al_get_bitmap_height(mapa),
-            0, 0,
-            largura, altura,
+
+            // Posicao do mapa na tela, quando personagem anda para direira o mapa se move para esquerda
+            -cameraX, -cameraY,
+
+            // Tamanho do mundo
+            LARGURA_MUNDO, ALTURA_MUNDO,
             0
         );
     }
