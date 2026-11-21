@@ -11,14 +11,14 @@
 static const Retangulo obstaculos[] = {
 
     // TEMPLO - mantemos a escadaria livre
-    {493, 15, 143, 338},   // Lateral esquerda
-    {785, 15, 155, 338},   // Lateral direita
+    {493, 15, 165, 338},   // Lateral esquerda
+    {790, 15, 155, 338},   // Lateral direita
     {637, 8, 149, 232},    // Porta fechada
 
     // PALMEIRAS PROXIMAS AO TEMPLO
     {446, 92, 27, 192},    // Palmeira grande esquerda
     {423, 190, 22, 84},    // Palmeira pequena esquerda
-    {953, 91, 26, 170},    // Palmeira direita
+    {953, 125, 46, 170},    // Palmeira direita
 
     // COLUNAS DO LAGO
     {242, 322, 160, 167},  // Estrutura das colunas
@@ -29,7 +29,7 @@ static const Retangulo obstaculos[] = {
 
     // CASA - telhado e paredes
     {208, 680, 176, 83},   // Parte superior da casa
-    {145, 755, 257, 160},  // Corpo principal
+    {145, 775, 257, 170},  // Corpo principal
     {398, 768, 146, 152},  // Tenda lateral da casa
 
     // PALMEIRA PERTO DA CASA
@@ -45,25 +45,37 @@ static const Retangulo obstaculos[] = {
     {937, 425, 29, 85},
 
     // ARCO E RUINAS
-    {1048, 681, 78, 63},   // Parte superior do arco
-    {1000, 707, 49, 166},  // Pilar esquerdo
-    {1118, 707, 52, 167},  // Pilar direito
-    {859, 788, 142, 107},  // Pedras esquerdas
-    {1167, 786, 70, 109},  // Pedras direitas
+    {1068, 720, 104, 52},   // Parte superior do arco
+    {1030, 748, 46, 145},  // Pilar esquerdo
+    {1160, 770, 34, 123},  // Pilar direito
+    {945, 803, 85, 38},     //topo das pedras ruina esq
+    {879, 850, 150, 43},  // Pedras esquerdas
+    {1168, 800, 97, 70},  // Pedras direitas
 
     // PALMEIRA DAS RUINAS
-    {1223, 681, 29, 179},
+    {1257, 750, 23, 150},
 
     // PIRAMIDE
-    {38, 178, 326, 41},
-    {79, 128, 250, 51},
-    {117, 62, 174, 64},
-    {160, 7, 28, 55},
+    {75, 176, 260, 19},  // Base inferior
+    {79, 128, 250, 51},  // Parte inferior
+    {117, 62, 174, 64},  // Parte central
+    {160, 7, 28, 55},    // Ponta
+
+    // PEDRAS A ESQUERDA DA PIRAMIDE
+    {10, 207, 115, 46},
+
+    // PIRAMIDE PEQUENA DA DIREITA
+    {330, 75, 45, 30},   // Parte superior
+    {305, 108, 100, 30}, // Parte central
+    {280, 130, 125, 20}, // Base
 
     // PEDRAS DO DESERTO
-    {531, 446, 100, 34},
-    {853, 670, 90, 45},
-    {18, 956, 121, 46},
+    {555, 470, 95, 18},  // base da pedra
+    {575, 448, 40, 18},  // ponta / bloco de cima
+    {870, 705, 92, 18},  // base da pedra2
+    {900, 686, 60, 16},  // parte de cima2
+    {36, 998, 135, 34},  // Pedras perto da casa base3
+    {60, 970, 75, 28},   //topo3
     {287, 240, 84, 35},
     {872, 972, 66, 38}
 };
