@@ -9,6 +9,7 @@
 #include "mapa.h"
 #include "personagem.h"
 #include "camera.h"
+#include "colisao.h"
 
 #define LARGURA_TELA 1300
 #define ALTURA_TELA 800
@@ -22,6 +23,8 @@ typedef enum
 
 int main()
 {
+    printf("\nTeste colisao: %d\n",
+           posicao_bloqueada(800, 200, 75, 50));
 
     // Inicialização do Allegro
     if (!al_init())
