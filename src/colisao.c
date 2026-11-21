@@ -183,3 +183,72 @@ bool posicao_bloqueada(float x, float y,
     // Caminho livre
     return false;
 }
+
+void desenhar_colisoes(float cameraX, float cameraY)
+{
+    // Desenha as colisoes dos objetos
+    int total = sizeof(obstaculos) / sizeof(obstaculos[0]);
+
+    for (int i = 0; i < total; i++)
+    {
+        float x1 = obstaculos[i].x * ESCALA_X - cameraX;
+        float y1 = obstaculos[i].y * ESCALA_Y - cameraY;
+
+        float x2 = (obstaculos[i].x + obstaculos[i].width)
+                   * ESCALA_X - cameraX;
+
+        float y2 = (obstaculos[i].y + obstaculos[i].height)
+                   * ESCALA_Y - cameraY;
+
+        // Fundo vermelho transparente
+        al_draw_filled_rectangle(
+            x1, y1, x2, y2,
+            al_map_rgba(255, 0, 0, 65)
+        );
+
+        // Contorno vermelho
+        al_draw_rectangle(
+            x1, y1, x2, y2,
+            al_map_rgb(255, 0, 0),
+            2
+        );
+    }
+
+    // Colisao do lago
+    float lagoX = 288 * ESCALA_X - cameraX;
+    float lagoY = 506 * ESCALA_Y - cameraY;
+    float raioX = 180 * ESCALA_X;
+    float raioY = 89 * ESCALA_Y;
+
+    al_draw_filled_ellipse(
+        lagoX, lagoY,
+        raioX, raioY,
+        al_map_rgba(0, 100, 255, 65)
+    );
+
+    al_draw_ellipse(
+        lagoX, lagoY,
+        raioX, raioY,
+        al_map_rgb(0, 100, 255),
+        3
+    );
+
+    // Margem do Rio Nilo
+    int totalPontos = sizeof(margemNilo) /
+                      sizeof(margemNilo[0]);
+
+    for (int i = 0; i < totalPontos - 1; i++)
+    {
+        al_draw_line(
+            margemNilo[i].x * ESCALA_X - cameraX,
+            margemNilo[i].y * ESCALA_Y - cameraY,
+
+            margemNilo[i + 1].x * ESCALA_X - cameraX,
+            margemNilo[i + 1].y * ESCALA_Y - cameraY,
+
+            al_map_rgb(0, 100, 255),
+            3
+        );
+    }
+}
+

@@ -1,3 +1,4 @@
+
 {
     "version": "2.0.0",
     "tasks": [
@@ -6,9 +7,16 @@
             "type": "process",
             "command": "C:/msys64/ucrt64/bin/gcc.exe",
             "args": [
-                "-g", "-Wall", "-std=c17",
-                "${workspaceFolder}/telainicio.c",
-                "-o", "${workspaceFolder}/jogo.exe",
+                "-g",
+                "-Wall",
+                "-std=c17",
+                "${workspaceFolder}/src/telainicio.c",
+                "${workspaceFolder}/src/camera.c",
+                "${workspaceFolder}/src/colisao.c",
+                "${workspaceFolder}/src/mapa.c",
+                "${workspaceFolder}/src/personagem.c",
+                "-o",
+                "${workspaceFolder}/jogo.exe",
                 "-lallegro_primitives",
                 "-lallegro_font",
                 "-lallegro_ttf",
@@ -18,8 +26,16 @@
                 "-lallegro_dialog",
                 "-lallegro"
             ],
-            "problemMatcher": ["$gcc"],
-            "group": { "kind": "build", "isDefault": true }
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
         }
     ]
 }

@@ -22,4 +22,7 @@ void personagem_tecla(int tecla, bool pressionada);
 //atualiza a possição do personagem
 void atualizar_posicao_personagem(int largura_mapa, int altura_mapa);
 
+//desenha a colisão do perssonagem
+void desenhar_colisao_personagem(float cameraX, float cameraY);
+
 #endif // encerra compilação condicional do ifndef
