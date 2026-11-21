@@ -41,8 +41,6 @@ static const Retangulo obstaculos[] = {
     {1017, 449, 189, 86},  // Mercadorias
     {1177, 468, 65, 83},   // Vasos
 
-    // PALMEIRA DO MERCADO
-    {937, 425, 29, 85},
 
     // ARCO E RUINAS
     {1068, 720, 104, 52},   // Parte superior do arco
