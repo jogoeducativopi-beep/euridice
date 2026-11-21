@@ -5,6 +5,17 @@
 #include "personagem.h"
 #include "colisao.h"
 
+//variáveis que irão guardam a direção, o quadro atual e o tempo entre os quadros.
+#define LARGURA_FRAME 140
+#define ALTURA_FRAME 192
+
+static ALLEGRO_BITMAP *spritesheet = NULL;
+
+static int direcaoAnimacao = 0;
+static int quadroAnimacao = 0;
+static int contadorAnimacao = 0;
+static bool estaAndando = false;
+
 // Imagem do personagem // Ponteiro para armazenar a imagem do personagem //posições das imagens
 static ALLEGRO_BITMAP *frente = NULL;
 static ALLEGRO_BITMAP *costa = NULL;
@@ -41,37 +52,59 @@ bool carregar_personagem_mapa(void)
     }
     // personagem olhando para frente
     imagemAtual = frente;
+    
+        spritesheet = al_load_bitmap(
+    "assets/imagens/explorador_sprites.png"
+);
+
+if (!spritesheet)
+{
+    printf("Erro ao carregar spritesheet!\n");
+    liberar_personagem_mapa();
+    return false;
+}
+
     printf("Personagem Carregado");
     return true;
 }
 // Guarda quando uma tecla é pressionada ou solta
+
 void personagem_tecla(int tecla, bool pressionada)
 {
-    if (tecla >= 0 && tecla < ALLEGRO_KEY_MAX)
-    {
-        teclas[tecla] = pressionada;
-    }
+    if (tecla < 0 || tecla >= ALLEGRO_KEY_MAX)
+        return;
 
-    if (pressionada)
+    teclas[tecla] = pressionada;
+
+    if (!pressionada)
+        return;
+
+    if (tecla == ALLEGRO_KEY_RIGHT ||
+        tecla == ALLEGRO_KEY_D)
     {
-        if (tecla == ALLEGRO_KEY_RIGHT || tecla == ALLEGRO_KEY_D)
-        {
-            imagemAtual = direita;
-        }
-        else if (tecla == ALLEGRO_KEY_LEFT || tecla == ALLEGRO_KEY_A)
-        {
-            imagemAtual = esquerda;
-        }
-        else if (tecla == ALLEGRO_KEY_UP || tecla == ALLEGRO_KEY_W)
-        {
-            imagemAtual = costa;
-        }
-        else if (tecla == ALLEGRO_KEY_DOWN || tecla == ALLEGRO_KEY_S)
-        {
-            imagemAtual = frente;
-        }
+        direcaoAnimacao = 2;
+        imagemAtual = direita;
+    }
+    else if (tecla == ALLEGRO_KEY_LEFT ||
+             tecla == ALLEGRO_KEY_A)
+    {
+        direcaoAnimacao = 1;
+        imagemAtual = esquerda;
+    }
+    else if (tecla == ALLEGRO_KEY_UP ||
+             tecla == ALLEGRO_KEY_W)
+    {
+        direcaoAnimacao = 3;
+        imagemAtual = costa;
+    }
+    else if (tecla == ALLEGRO_KEY_DOWN ||
+             tecla == ALLEGRO_KEY_S)
+    {
+        direcaoAnimacao = 0;
+        imagemAtual = frente;
     }
 }
+
 
 // Atualizar a posição do personagem e imagem
 void atualizar_posicao_personagem(int largura_mapa, int altura_mapa)
@@ -132,21 +165,72 @@ void atualizar_posicao_personagem(int largura_mapa, int altura_mapa)
 
         //guarda onde o personagem estava, verifica se estar bloqueado e se sim volta para onde estava
     }
+
+// Anima somente quando o personagem se move
+
+    // Verifica se o personagem esta andando
+    estaAndando = (x != xAnterior || y != yAnterior);
+
+    if (estaAndando)
+    {
+        contadorAnimacao++;
+
+        if (contadorAnimacao >= 8)
+        {
+            contadorAnimacao = 0;
+            quadroAnimacao = (quadroAnimacao + 1) % 4;
+        }
+    }
+    else
+    {
+        // Parou de andar
+        quadroAnimacao = 0;
+        contadorAnimacao = 0;
+    }
 }
+
 void desenha_personagem(float cameraX, float cameraY)
 {
-    if (imagemAtual != NULL)
+    // Personagem andando
+    if (estaAndando && spritesheet != NULL)
+    {
+        al_draw_scaled_bitmap(
+            spritesheet,
+
+            quadroAnimacao * LARGURA_FRAME,
+            direcaoAnimacao * ALTURA_FRAME,
+
+            LARGURA_FRAME,
+            ALTURA_FRAME,
+
+            x - cameraX,
+            y - cameraY,
+
+            largura,
+            altura,
+            0
+        );
+    }
+    // Personagem parado
+    else if (imagemAtual != NULL)
     {
         al_draw_scaled_bitmap(
             imagemAtual,
+
             0, 0,
             al_get_bitmap_width(imagemAtual),
             al_get_bitmap_height(imagemAtual),
-            x - cameraX, y - cameraY, // onde o personagem deve aparecer
-            largura, altura,
-            0);
+
+            x - cameraX,
+            y - cameraY,
+
+            largura,
+            altura,
+            0
+        );
     }
 }
+
 void liberar_personagem_mapa(void)
 {
     if (frente != NULL)
@@ -170,6 +254,12 @@ void liberar_personagem_mapa(void)
     direita = NULL;
     esquerda = NULL;
     imagemAtual = NULL;
+
+    if (spritesheet != NULL)
+{
+    al_destroy_bitmap(spritesheet);
+    spritesheet = NULL;
+}
 }
 float personagem_centro_x(void)
 {
