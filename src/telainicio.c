@@ -12,6 +12,7 @@
 #include "colisao.h"
 #include <allegro5/allegro_font.h>
 #include "interacao.h"
+#include "missaoMercado.h"
 
 #define LARGURA_TELA 1300
 #define ALTURA_TELA 800
@@ -45,6 +46,12 @@ int main()
     if (!al_init_image_addon())
     {
         fprintf(stderr, "Falha ao inicializar o addon de imagem.\n");
+        return -1;
+    }
+
+    if (!inicia_mercado())
+    {
+        printf("Nao foi possivel carregar o mercado.\n");
         return -1;
     }
 
