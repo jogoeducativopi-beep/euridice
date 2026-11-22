@@ -52,7 +52,7 @@ int main()
     if (!inicia_mercado())
     {
         printf("Nao foi possivel carregar o mercado.\n");
-        return -1;
+        return -1; //o if so sera executado quando o carregamento falhar
     }
 
     // Inicialização do áudio
@@ -493,6 +493,8 @@ int main()
                 }
                 // Desenha as mensagens por cima do mapa
                 desenhar_interacao();
+                //desenha o mercado por cima do mapa 
+                desenhar_mercado();
             }
 
             al_flip_display(); // esse comando atualiza a imagem
@@ -510,6 +512,7 @@ int main()
     liberar_personagem_mapa();
     // Libera os recursos das mensagens
     liberar_interacao();
+    liberar_mercado();
     al_destroy_display(display);
 
     // Libera a imagem do templo - Esse comando evita que a imagem ocupa a memória depos que o jogo fechar

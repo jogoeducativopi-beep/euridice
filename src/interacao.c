@@ -119,8 +119,8 @@ void desenhar_interacao(void)
     else if (mostrarAvisoMercado)
     {
         titulo = "MERCADO EGIPCIO";
-        mensagem1 = "Entre as mercadorias existe uma pista.";
-        mensagem2 = "Examine os objetos para descobrir o segredo.";
+        mensagem1 = "Examine os objetos para descobrir o segredo.";
+        mensagem2 = "Aperte ENTER para entrar no mercado";
     }
     else if (mostrarAvisoLago)
     {
