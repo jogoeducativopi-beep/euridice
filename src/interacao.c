@@ -101,6 +101,43 @@ void desenhar_interacao(void)
             ALLEGRO_ALIGN_CENTER,
             "Pressione E para fechar");
     }
+    else if (mostrarAvisoMercado)
+    {
+        // Desenha o fundo da caixa de mensagem
+        al_draw_filled_rectangle(
+            200, 600, 1100, 750,
+            al_map_rgb(60, 40, 25));
+
+        // Desenha a borda dourada
+        al_draw_rectangle(
+            200, 600, 1100, 750,
+            al_map_rgb(230, 185, 85),
+            3);
+
+        // Escreve o titulo
+        al_draw_text(
+            fonteAviso,
+            al_map_rgb(255, 215, 120),
+            650, 630,
+            ALLEGRO_ALIGN_CENTER,
+            "MERCADO EGÍPCIO");
+
+        // Escreve a mensagem
+        al_draw_text(
+            fonteAviso,
+            al_map_rgb(255, 255, 255),
+            650, 675,
+            ALLEGRO_ALIGN_CENTER,
+            "Entre as mercadorias existe uma pista para abrir a casa. Examine os objetos para descobrir o segredo.");
+
+        // Instrucao para fechar
+        al_draw_text(
+            fonteAviso,
+            al_map_rgb(255, 255, 255),
+            650, 715,
+            ALLEGRO_ALIGN_CENTER,
+            "Pressione E para fechar");
+    }
 }
 void liberar_interacao(void)
 {
