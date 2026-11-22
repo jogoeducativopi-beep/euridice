@@ -10,6 +10,8 @@
 #include "personagem.h"
 #include "camera.h"
 #include "colisao.h"
+#include <allegro5/allegro_font.h>
+#include "interacao.h"
 
 #define LARGURA_TELA 1300
 #define ALTURA_TELA 800
@@ -36,6 +38,9 @@ int main()
 
     al_install_keyboard();
     al_install_mouse();
+    // Inicializa os recursos para desenhar textos e formas
+    al_init_font_addon();
+    al_init_primitives_addon();
 
     if (!al_init_image_addon())
     {
@@ -86,6 +91,12 @@ int main()
     if (!carregar_personagem_mapa())
     {
         printf("Falha ao carregar personagem!");
+    }
+
+    // Carrega os recursos das interacoes
+    if (!iniciar_interacao())
+    {
+        printf("Erro ao iniciar as interacoes!\n");
     }
 
     al_set_window_title(display, "Euridice");
@@ -250,21 +261,28 @@ int main()
                     printf("Entrou no mapa do egito");
                 }
             }
-        
+
             // Liga ou desliga as hitboxes ao apertar F3
-            else if (event.keyboard.keycode == ALLEGRO_KEY_F3
-                    && estado_atual == ESTADO_MAPA)
+            else if (event.keyboard.keycode == ALLEGRO_KEY_F3 && estado_atual == ESTADO_MAPA)
             {
                 mostrar_colisoes = !mostrar_colisoes;
 
                 printf("DEBUG COLISOES: %s\n",
-                    mostrar_colisoes ? "LIGADO" : "DESLIGADO");
+                       mostrar_colisoes ? "LIGADO" : "DESLIGADO");
             }
 
             // Registra a tecla pressionada no mapa
             if (estado_atual == ESTADO_MAPA)
             {
+
+                // movimento do personagem
                 personagem_tecla(event.keyboard.keycode, true);
+
+                // Verifica se o jogador quer interagir com algum local
+                interacao_tecla(
+                    event.keyboard.keycode,
+                    personagem_centro_x(),
+                    personagem_centro_y());
             }
         }
 
@@ -438,38 +456,36 @@ int main()
                 }
             }
             // Desenha o mapa do Egito e personagem
-            
+
             else if (estado_atual == ESTADO_MAPA)
             {
                 // Desenha o mapa
                 desenhar_mapa(
                     posicaoCameraX(),
-                    posicaoCameraY()
-                );
+                    posicaoCameraY());
 
                 // Mostra as colisoes dos objetos
                 if (mostrar_colisoes)
                 {
                     desenhar_colisoes(
                         posicaoCameraX(),
-                        posicaoCameraY()
-                    );
+                        posicaoCameraY());
                 }
 
                 // Desenha o personagem
                 desenha_personagem(
                     posicaoCameraX(),
-                    posicaoCameraY()
-                );
+                    posicaoCameraY());
 
                 // Mostra a hitbox dos pes
                 if (mostrar_colisoes)
                 {
                     desenhar_colisao_personagem(
                         posicaoCameraX(),
-                        posicaoCameraY()
-                    );
+                        posicaoCameraY());
                 }
+                // Desenha as mensagens por cima do mapa
+                desenhar_interacao();
             }
 
             al_flip_display(); // esse comando atualiza a imagem
@@ -485,6 +501,8 @@ int main()
     al_destroy_timer(timer);
     liberar_mapa();
     liberar_personagem_mapa();
+    // Libera os recursos das mensagens
+    liberar_interacao();
     al_destroy_display(display);
 
     // Libera a imagem do templo - Esse comando evita que a imagem ocupa a memória depos que o jogo fechar
