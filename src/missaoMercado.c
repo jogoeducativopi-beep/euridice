@@ -3,6 +3,7 @@
 #include <allegro5/allegro_image.h>
 #include "missaoMercado.h"
 #include <allegro5/allegro_primitives.h>
+#define TOTAL_PECAS 4
 
 // ponteiro que guarda a imagem da ativação do mercado
 static ALLEGRO_BITMAP *imagemMercado = NULL;
@@ -23,6 +24,20 @@ static bool encontrouPecaPapiro;
 static bool encontrouPecaTinteiro;
 //Guarda se o jogador encontrou a peça do caixote
 static bool encontrouPecaCaixote;
+
+//Posicao das peças nos 4 quadrados 
+static int quadradoX[TOTAL_PECAS] = {857,954,857,954};
+static int quadradoY[TOTAL_PECAS] = {312,312,412,412};
+
+//guarda as peças que foram encaixadas 
+static bool pecaEncaixada[TOTAL_PECAS] = {false};
+
+//qual peça esta sendo arrastada
+static int pecaArrastada = -1;
+
+//posição do mouse durante o arraste
+static int mouseArrasteX = 0;
+static int mouseArrasteY = 0;
 
 bool inicia_mercado(void)
 {
@@ -253,5 +268,36 @@ void clique_objetos_mercado(int mouseX, int mouseY)
                 printf("Encontrou pedaço da chave\n");
             }
         }
+    }
+}
+void iniciar_arraste_mercado(int mouseX, int mouseY){
+    if(!mercadoAberto){
+        return;
+    } //sai da função
+
+    //verifica quais peças foram arrastadas
+    bool encontrou[TOTAL_PECAS] = {
+        encontrouPecaVaso, encontrouPecaPapiro, encontrouPecaTinteiro, encontrouPecaCaixote
+    };
+    //Percorre o vetor dos 4 quadrados
+    for(int i =0; i<TOTAL_PECAS;i++){
+        //verifica se o clique  aconteceu dentro do quadrado
+        if (mouseX >= quadradoX[i] &&
+            mouseX <= quadradoX[i] + 80 &&
+            mouseY >= quadradoY[i] &&
+            mouseY <= quadradoY[i] + 80)
+        {
+            //so pode arrastar uma peça encontrada e que ainda nao foi encaixada
+            if (encontrou[i] && !pecaEncaixada[i])
+            {
+                pecaArrastada = i;
+                mouseArrasteX = mouseX;
+                mouseArrasteY = mouseY;
+                printf("Iniciou arraste da peça %d \n", i+1);
+                return;
+            }
+            
+        }
+        
     }
 }

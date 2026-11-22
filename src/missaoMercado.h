@@ -26,4 +26,13 @@ bool encontrou_chave_casa(void); //sim ou nao
 // Libera a imagem da memoria
 void liberar_mercado(void);
 
+//Começa a arrastar a peça quando o jogador clica nela
+void iniciar_arraste_mercado(int mouseX, int mouseY);
+
+//Atualiza a posição da peça quando ela é arrastada
+void mover_peca_mercado(int mouseX, int mouseY);
+
+//Verifica se a peça foi encaixada corretamente
+void soltar_peca_mercado(int mouseX, int mouseY);
+
 #endif

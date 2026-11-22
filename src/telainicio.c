@@ -325,6 +325,9 @@ int main()
                 if (estado_atual == ESTADO_MAPA && mercado_aberto())
                 {
                     clique_objetos_mercado(mx, my);
+
+                    //verifica se clicou na peça do painel
+                    iniciar_arraste_mercado(mx,my);
                 }
 
                 // Clique do botão JOGAR
