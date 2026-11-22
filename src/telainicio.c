@@ -11,6 +11,7 @@
 #include "camera.h"
 #include "colisao.h"
 #include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 #include "interacao.h"
 #include "missaoMercado.h"
 
@@ -42,7 +43,22 @@ int main()
     // Inicializa os recursos para desenhar textos e formas
     al_init_font_addon();
     al_init_primitives_addon();
+    al_init_ttf_addon();
+    // Inicia o texto
+    ALLEGRO_FONT *fonte_carta = al_load_ttf_font("C:/Windows/Fonts/georgia.ttf", 20, 0);
 
+    if (!fonte_carta)
+    {
+        printf("ERRO: Fonte Georgia nao carregou!\n");
+    }
+    else
+    {
+        printf("SUCESSO! Fonte Georgia carregada!\n");
+        printf("Altura da fonte: %d pixels\n",
+               al_get_font_line_height(fonte_carta));
+    }
+
+    // inicia a imagem
     if (!al_init_image_addon())
     {
         fprintf(stderr, "Falha ao inicializar o addon de imagem.\n");
@@ -494,13 +510,49 @@ int main()
                         al_map_rgba(0, 0, 0, 170));
 
                     // Mostra a carta aberta no centro
+
                     al_draw_scaled_bitmap(
                         carta_aberta,
                         0, 0,
                         al_get_bitmap_width(carta_aberta),
                         al_get_bitmap_height(carta_aberta),
-                        325, 120, 650, 560,
+                        275, 80, 750, 640,
                         0);
+
+                    // texto da carta
+                    if (fonte_carta)
+                    {
+                        ALLEGRO_COLOR cor_texto = al_map_rgb(75, 45, 25);
+
+                        al_draw_text(fonte_carta, cor_texto,
+                                     650, 265, ALLEGRO_ALIGN_CENTER,
+                                     "CARO EXPLORADOR,");
+
+                        al_draw_text(fonte_carta, cor_texto,
+                                     650, 310, ALLEGRO_ALIGN_CENTER,
+                                     "Voce chegou ao Antigo Egito.");
+
+                        al_draw_text(fonte_carta, cor_texto,
+                                     650, 335, ALLEGRO_ALIGN_CENTER,
+                                     "Explore e descubra seus misterios.");
+
+                        al_draw_text(fonte_carta, cor_texto,
+                                     650, 360, ALLEGRO_ALIGN_CENTER,
+                                     "Encontre as pistas para voltar.");
+
+                        al_draw_text(fonte_carta, cor_texto,
+                                     650, 410, ALLEGRO_ALIGN_CENTER,
+                                     "Sua aventura começa agora!");
+
+            
+                     al_draw_text(
+                                fonte_carta,
+                                al_map_rgb(0, 0, 0),
+                                650, 480,
+                                ALLEGRO_ALIGN_CENTER,
+                                "Pressione ESPACO para iniciar");
+                        
+                    }
                 }
             }
             // Desenha o mapa do Egito e personagem
