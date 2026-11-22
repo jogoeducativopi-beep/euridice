@@ -12,6 +12,12 @@ static bool mostrarAvisoCasa = false;
 // Controla a abertura do aviso do mercado
 static bool mostrarAvisoMercado = false;
 
+//Controla abertura do aviso do lago
+static bool mostrarAvisoLago = false;
+
+//Controla abertura do aviso do templo
+static bool mostrarAvisoTemplo = false;
+
 // inicia a fonte que sera usada nas mensagens
 bool iniciar_interacao(void)
 {
@@ -57,6 +63,18 @@ void interacao_tecla(int tecla, float jogadorX, float jogadorY)
             {
                 mostrarAvisoMercado = true;
             }
+            //Personagem proximo do lago
+            else if (jogadorX >= 490 && jogadorX <= 740 &&
+                     jogadorY >= 850 && jogadorY <= 955)
+            {
+                mostrarAvisoLago = true;
+            }
+            //Personagem proximo ao templo
+            else if (jogadorX >= 1080 && jogadorX <= 1235 &&
+                     jogadorY >= 350 && jogadorY <= 470)
+            {
+                mostrarAvisoTemplo = true;
+            }
         }
     }
 }
@@ -82,6 +100,19 @@ void desenhar_interacao(void)
         mensagem1 = "Entre as mercadorias existe uma pista.";
         mensagem2 = "Examine os objetos para descobrir o segredo.";
     }
+    else if(mostrarAvisoLago)
+    {
+        titulo = "Oasis";
+        mensagem1 = "Descubra os segredos do Oasis";
+        mensagem2 = "Escave o Tesouso do Oasis";
+    }
+    else if (mostrarAvisoTemplo)
+    {
+        titulo = "Templo Egipcio";
+        mensagem1 = "A porta esta trancada conclua as missoes";
+        mensagem2 = "Explore o mapa";
+    }
+    
     else
     {
         return;
