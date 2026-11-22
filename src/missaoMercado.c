@@ -2,11 +2,14 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 #include "missaoMercado.h"
+#include <allegro5/allegro_primitives.h>
 
 // ponteiro que guarda a imagem da ativação do mercado
 static ALLEGRO_BITMAP *imagemMercado = NULL;
 // verifica se tela da imagem do mercado esta aberta
 static bool mercadoAberto = false;
+// Guarda se o jogador encontrou do vaso
+static bool encontrouPecaVaso = false;
 
 bool inicia_mercado(void)
 {
@@ -55,6 +58,15 @@ void desenhar_mercado(void)
             1300, 800,
             0);
     }
+    //Desenha borda vermelha se encontrou a peça
+    if(encontrouPecaVaso)
+    {
+        al_draw_rectangle(
+            330,280,390,340, 
+            al_map_rgb(255,0,0),
+            3 //espessura da borda
+        );
+    }
 }
 
 void liberar_mercado(void)
@@ -73,6 +85,19 @@ void clique_objetos_mercado(int mouseX, int mouseY)
     if (mercadoAberto) //verifique se o mercado esta ativado
     {
         printf("Clique no mercado: X= %d, Y= %d \n", mouseX,mouseY);
+
+        //verifica se o jogador clicou na peça do vaso
+        if (mouseX>= 330 && mouseX<=390 && mouseY>=280 && mouseY <= 340)
+        {
+            //marcar a peça como encontrada
+            if (!encontrouPecaVaso)
+            {
+                encontrouPecaVaso = true;
+                printf("Encontrou pedaço da chave\n");
+            }
+            
+        }
+        
     }
     
 }
