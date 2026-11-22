@@ -48,6 +48,14 @@ void interacao_tecla(int tecla, float jogadorX, float jogadorY)
         {
             mostrarAvisoMercado = false;
         }
+        else if(mostrarAvisoLago)
+        {
+            mostrarAvisoLago = false;
+        }
+        else if(mostrarAvisoTemplo)
+        {
+            mostrarAvisoTemplo = false;
+        }
         else
         {
             // Verifica se o jogador esta perto da porta da casa
