@@ -312,16 +312,14 @@ int main()
             }
         }
 
-        //Detecta movimento do mouse
-        else if (event.type == ALLEGRO_EVENT_MOUSE_AXES) //evento que identifica os movimentos do mouse
+        // Detecta movimento do mouse
+        else if (event.type == ALLEGRO_EVENT_MOUSE_AXES) // evento que identifica os movimentos do mouse
         {
             if (estado_atual == ESTADO_MAPA && mercado_aberto())
             {
                 mover_peca_mercado(event.mouse.x, event.mouse.y);
             }
-            
         }
-        
 
         // Clique do botão JOGAR e mouse
 
@@ -337,8 +335,8 @@ int main()
                 {
                     clique_objetos_mercado(mx, my);
 
-                    //verifica se clicou na peça do painel
-                    iniciar_arraste_mercado(mx,my);
+                    // verifica se clicou na peça do painel
+                    iniciar_arraste_mercado(mx, my);
                 }
 
                 // Clique do botão JOGAR
@@ -386,6 +384,19 @@ int main()
                         }
                     }
                 }
+            }
+        }
+
+        // Quando o jogador soltar o botao do mouse
+        else if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
+        {
+            if (event.mouse.button == 1 &&
+                estado_atual == ESTADO_MAPA &&
+                mercado_aberto())
+            {
+                soltar_peca_mercado(
+                    event.mouse.x,
+                    event.mouse.y);
             }
         }
 

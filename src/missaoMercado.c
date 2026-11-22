@@ -18,24 +18,28 @@ static ALLEGRO_BITMAP *ImagemPeçaCaixote = NULL;
 static bool mercadoAberto = false;
 // Guarda se o jogador encontrou do vaso
 static bool encontrouPecaVaso = false;
-//Gurada se o jogador encontro a peça do papiro 
+// Gurada se o jogador encontro a peça do papiro
 static bool encontrouPecaPapiro;
-//Guarda se o jogador encontrou a peça do tinteiro
+// Guarda se o jogador encontrou a peça do tinteiro
 static bool encontrouPecaTinteiro;
-//Guarda se o jogador encontrou a peça do caixote
+// Guarda se o jogador encontrou a peça do caixote
 static bool encontrouPecaCaixote;
 
-//Posicao das peças nos 4 quadrados 
-static int quadradoX[TOTAL_PECAS] = {857,954,857,954};
-static int quadradoY[TOTAL_PECAS] = {312,312,412,412};
+// Posição das peças nos 4 quadrados
+static int quadradoX[TOTAL_PECAS] = {857, 954, 857, 954};
+static int quadradoY[TOTAL_PECAS] = {312, 312, 412, 412};
 
-//guarda as peças que foram encaixadas 
+// Posição das peças na silhueta da chave
+static int encaixeX[TOTAL_PECAS] = {739, 764, 755, 756};
+static int encaixeY[TOTAL_PECAS] = {318, 340, 388, 440};
+
+// guarda as peças que foram encaixadas
 static bool pecaEncaixada[TOTAL_PECAS] = {false};
 
-//qual peça esta sendo arrastada
+// qual peça esta sendo arrastada
 static int pecaArrastada = -1;
 
-//posição do mouse durante o arraste
+// posição do mouse durante o arraste
 static int mouseArrasteX = 0;
 static int mouseArrasteY = 0;
 
@@ -57,17 +61,17 @@ bool inicia_mercado(void)
         return false;
     }
 
-        if (ImagemPeçaPapiro == NULL)
+    if (ImagemPeçaPapiro == NULL)
     {
         printf("Erro ao carregar a peca do papiro!\n");
         return false;
     }
-        if (ImagemPeçaTinteiro == NULL)
+    if (ImagemPeçaTinteiro == NULL)
     {
         printf("Erro ao carregar a peca do tinteiro!\n");
         return false;
     }
-        if (ImagemPeçaCaixote == NULL)
+    if (ImagemPeçaCaixote == NULL)
     {
         printf("Erro ao carregar a peça do caixote!\n");
         return false;
@@ -103,8 +107,8 @@ bool mercado_aberto(void)
 
 void desenhar_mercado(void)
 {
-    //se o mercado estiver fechado ou a imagem nao existir ele fecha a função sem desenhar
-    if (!mercadoAberto || imagemMercado ==NULL)
+    // se o mercado estiver fechado ou a imagem nao existir ele fecha a função sem desenhar
+    if (!mercadoAberto || imagemMercado == NULL)
     {
         return;
     }
@@ -130,7 +134,7 @@ void desenhar_mercado(void)
             3 // espessura da borda
         );
     }
-        // Desenha borda vermelha se encontrou a peça
+    // Desenha borda vermelha se encontrou a peça
     if (encontrouPecaPapiro)
     {
         al_draw_rectangle(
@@ -139,7 +143,7 @@ void desenhar_mercado(void)
             3 // espessura da borda
         );
     }
-        // Desenha borda vermelha se encontrou a peça
+    // Desenha borda vermelha se encontrou a peça
     if (encontrouPecaTinteiro)
     {
         al_draw_rectangle(
@@ -148,7 +152,7 @@ void desenhar_mercado(void)
             3 // espessura da borda
         );
     }
-        // Desenha borda vermelha se encontrou a peça
+    // Desenha borda vermelha se encontrou a peça
     if (encontrouPecaCaixote)
     {
         al_draw_rectangle(
@@ -158,72 +162,88 @@ void desenhar_mercado(void)
         );
     }
     // Se encontrou a peça do vaso, desenha no primeiro quadrado
-    if (encontrouPecaVaso && ImagemPeçaVaso != NULL && pecaArrastada != 0)
+    if (encontrouPecaVaso && ImagemPeçaVaso != NULL && pecaArrastada != 0 && !pecaEncaixada[0])
     {
         al_draw_scaled_bitmap(
             ImagemPeçaVaso,
             0, 0,
             al_get_bitmap_width(ImagemPeçaVaso),
             al_get_bitmap_height(ImagemPeçaVaso),
-            857, 312, 
+            857, 312,
             80, 80,
             0);
     }
-        if (encontrouPecaPapiro && ImagemPeçaPapiro != NULL && pecaArrastada !=1)
+    if (encontrouPecaPapiro && ImagemPeçaPapiro != NULL && pecaArrastada != 1 && !pecaEncaixada[1])
     {
         al_draw_scaled_bitmap(
             ImagemPeçaPapiro,
             0, 0,
             al_get_bitmap_width(ImagemPeçaPapiro),
             al_get_bitmap_height(ImagemPeçaPapiro),
-            954, 312, 
+            954, 312,
             80, 80,
             0);
     }
-        if (encontrouPecaTinteiro && ImagemPeçaTinteiro != NULL && pecaArrastada != 2)
+    if (encontrouPecaTinteiro && ImagemPeçaTinteiro != NULL && pecaArrastada != 2 && !pecaEncaixada[2])
     {
         al_draw_scaled_bitmap(
             ImagemPeçaTinteiro,
             0, 0,
             al_get_bitmap_width(ImagemPeçaTinteiro),
             al_get_bitmap_height(ImagemPeçaTinteiro),
-            857, 412, 
+            857, 412,
             80, 80,
             0);
     }
-        if (encontrouPecaCaixote && ImagemPeçaCaixote != NULL && pecaArrastada !=3)
+    if (encontrouPecaCaixote && ImagemPeçaCaixote != NULL && pecaArrastada != 3 && !pecaEncaixada[3])
     {
         al_draw_scaled_bitmap(
             ImagemPeçaCaixote,
             0, 0,
             al_get_bitmap_width(ImagemPeçaCaixote),
             al_get_bitmap_height(ImagemPeçaCaixote),
-            954, 412, 
+            954, 412,
             80, 80,
             0);
     }
 
-    //vetor que guarda as quatro imagens das peças
-    ALLEGRO_BITMAP * imagensPecas[TOTAL_PECAS] = {
-        ImagemPeçaVaso, ImagemPeçaPapiro,ImagemPeçaTinteiro,ImagemPeçaCaixote
-    };
-    //desenha a peça selencionada acompanhando o mouse
-    if (pecaArrastada !=-1)
+    // vetor que guarda as quatro imagens das peças
+    ALLEGRO_BITMAP *imagensPecas[TOTAL_PECAS] = {
+        ImagemPeçaVaso, ImagemPeçaPapiro, ImagemPeçaTinteiro, ImagemPeçaCaixote};
+    // desenha a peça selencionada acompanhando o mouse
+    if (pecaArrastada != -1)
     {
-        ALLEGRO_BITMAP * peca = imagensPecas[pecaArrastada];
-        if(peca != NULL){
+        ALLEGRO_BITMAP *peca = imagensPecas[pecaArrastada];
+        if (peca != NULL)
+        {
             al_draw_scaled_bitmap(
-            peca,
-            0, 0,
-            al_get_bitmap_width(peca),
-            al_get_bitmap_height(peca),
-            mouseArrasteX - 40,
-            mouseArrasteY - 40,
-            80, 80, //nossa peça mede 80 subtraimos metade para que o centro acompanhe o cursor
-            0);
+                peca,
+                0, 0,
+                al_get_bitmap_width(peca),
+                al_get_bitmap_height(peca),
+                mouseArrasteX - 40,
+                mouseArrasteY - 40,
+                80, 80, // nossa peça mede 80 subtraimos metade para que o centro acompanhe o cursor
+                0);
         }
     }
-    
+    // percorre as quatro peças
+    for (int i = 0; i < TOTAL_PECAS; i++)
+    {
+        // desenha a peça se ela foi encaixada
+        if (pecaEncaixada[i] && imagensPecas[i] != NULL)
+        {
+            al_draw_scaled_bitmap(
+                imagensPecas[i],
+                0, 0,
+                al_get_bitmap_width(imagensPecas[i]),
+                al_get_bitmap_height(imagensPecas[i]),
+                encaixeX[i],
+                encaixeY[i],
+                48, 48,
+                0);
+        }
+    }
 }
 
 void liberar_mercado(void)
@@ -235,14 +255,13 @@ void liberar_mercado(void)
         al_destroy_bitmap(imagemMercado);
     }
     // Libera a imagem da peça do vaso
-    if(ImagemPeçaVaso!=NULL)
+    if (ImagemPeçaVaso != NULL)
     {
         al_destroy_bitmap(ImagemPeçaVaso);
         ImagemPeçaVaso = NULL;
     }
     // o ponteiro não aponta mais para a imagem
     imagemMercado = NULL;
-
 }
 void clique_objetos_mercado(int mouseX, int mouseY)
 {
@@ -260,7 +279,7 @@ void clique_objetos_mercado(int mouseX, int mouseY)
                 printf("Encontrou pedaço da chave\n");
             }
         }
-                // verifica se o jogador clicou na peça do papiro
+        // verifica se o jogador clicou na peça do papiro
         if (mouseX >= 396 && mouseX <= 448 && mouseY >= 380 && mouseY <= 438)
         {
             // marcar a peça como encontrada
@@ -270,7 +289,7 @@ void clique_objetos_mercado(int mouseX, int mouseY)
                 printf("Encontrou pedaço da chave\n");
             }
         }
-                // verifica se o jogador clicou na peça do vaso
+        // verifica se o jogador clicou na peça do vaso
         if (mouseX >= 286 && mouseX <= 338 && mouseY >= 504 && mouseY <= 564)
         {
             // marcar a peça como encontrada
@@ -280,7 +299,7 @@ void clique_objetos_mercado(int mouseX, int mouseY)
                 printf("Encontrou pedaço da chave\n");
             }
         }
-                // verifica se o jogador clicou na peça do vaso
+        // verifica se o jogador clicou na peça do vaso
         if (mouseX >= 1100 && mouseX <= 1142 && mouseY >= 650 && mouseY <= 697)
         {
             // marcar a peça como encontrada
@@ -292,40 +311,61 @@ void clique_objetos_mercado(int mouseX, int mouseY)
         }
     }
 }
-void iniciar_arraste_mercado(int mouseX, int mouseY){
-    if(!mercadoAberto){
+void iniciar_arraste_mercado(int mouseX, int mouseY)
+{
+    if (!mercadoAberto)
+    {
         return;
-    } //sai da função
+    } // sai da função
 
-    //verifica quais peças foram arrastadas
+    // verifica quais peças foram arrastadas
     bool encontrou[TOTAL_PECAS] = {
-        encontrouPecaVaso, encontrouPecaPapiro, encontrouPecaTinteiro, encontrouPecaCaixote
-    };
-    //Percorre o vetor dos 4 quadrados
-    for(int i =0; i<TOTAL_PECAS;i++){
-        //verifica se o clique  aconteceu dentro do quadrado
+        encontrouPecaVaso, encontrouPecaPapiro, encontrouPecaTinteiro, encontrouPecaCaixote};
+    // Percorre o vetor dos 4 quadrados
+    for (int i = 0; i < TOTAL_PECAS; i++)
+    {
+        // verifica se o clique  aconteceu dentro do quadrado
         if (mouseX >= quadradoX[i] &&
             mouseX <= quadradoX[i] + 80 &&
             mouseY >= quadradoY[i] &&
             mouseY <= quadradoY[i] + 80)
         {
-            //so pode arrastar uma peça encontrada e que ainda nao foi encaixada
+            // so pode arrastar uma peça encontrada e que ainda nao foi encaixada
             if (encontrou[i] && !pecaEncaixada[i])
             {
                 pecaArrastada = i;
                 mouseArrasteX = mouseX;
                 mouseArrasteY = mouseY;
-                printf("Iniciou arraste da peça %d \n", i+1);
+                printf("Iniciou arraste da peça %d \n", i + 1);
                 return;
-            }   
-        } 
+            }
+        }
     }
 }
-void mover_peca_mercado(int mouseX, int mouseY){
+void mover_peca_mercado(int mouseX, int mouseY)
+{
     // verifica se alguma peça esta sendo arrastada
-    if(mercadoAberto && pecaArrastada != -1){
-        //atualiza a posição do mouse
+    if (mercadoAberto && pecaArrastada != -1)
+    {
+        // atualiza a posição do mouse
         mouseArrasteX = mouseX;
         mouseArrasteY = mouseY;
     }
+}
+void soltar_peca_mercado(int mouseX, int mouseY)
+{
+    // verifica se alguma peça esta sendo arrastada
+    if (pecaArrastada == -1)
+    {
+        return;
+    }
+    // verifica se o mouse esta sobre a silhueta
+    if (mouseX >= 705 && mouseX <= 838 && mouseY >= 295 && mouseY <= 510)
+    {
+        // marca a peça selecionada como encaixada
+        pecaEncaixada[pecaArrastada] = true;
+        printf("Peça %d encaixada \n", pecaArrastada + 1);
+    }
+    // Para arrastar a peça
+    pecaArrastada = -1;
 }
