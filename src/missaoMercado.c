@@ -4,6 +4,7 @@
 #include "missaoMercado.h"
 #include <allegro5/allegro_primitives.h>
 #define TOTAL_PECAS 4
+#include <allegro5/allegro_font.h>
 
 // ponteiro que guarda a imagem da ativação do mercado
 static ALLEGRO_BITMAP *imagemMercado = NULL;
@@ -15,6 +16,8 @@ static ALLEGRO_BITMAP *ImagemPeçaPapiro = NULL;
 static ALLEGRO_BITMAP *ImagemPeçaTinteiro = NULL;
 static ALLEGRO_BITMAP *ImagemPeçaCaixote = NULL;
 
+static ALLEGRO_FONT *fonteMercado = NULL;
+
 static bool mercadoAberto = false;
 // Guarda se o jogador encontrou do vaso
 static bool encontrouPecaVaso = false;
@@ -24,6 +27,12 @@ static bool encontrouPecaPapiro;
 static bool encontrouPecaTinteiro;
 // Guarda se o jogador encontrou a peça do caixote
 static bool encontrouPecaCaixote;
+
+// Verifique se a chave foi totalmente montada
+static bool casaDestrancada = false;
+
+// controla a mensagem de missão conluida
+static bool mostrarAvisoDestrancada = false;
 
 // Posição das peças nos 4 quadrados
 static int quadradoX[TOTAL_PECAS] = {857, 954, 857, 954};
@@ -55,6 +64,8 @@ bool inicia_mercado(void)
     ImagemPeçaTinteiro = al_load_bitmap("assets/imagens/pecaTinteiro.png");
     ImagemPeçaCaixote = al_load_bitmap("assets/imagens/pecaCaixote.png");
 
+    fonteMercado = al_create_builtin_font();
+
     if (ImagemPeçaVaso == NULL)
     {
         printf("Erro ao carregar a peca do vaso!\n");
@@ -83,6 +94,13 @@ bool inicia_mercado(void)
         printf("Erro ao carregar imagem do mercado");
         return false;
     }
+
+    if (fonteMercado == NULL)
+    {
+        printf("Erro ao carregar fonte do mercado!\n");
+        return false;
+    }
+
     printf("Imagens Carregadas");
     return true;
 }
@@ -244,6 +262,52 @@ void desenhar_mercado(void)
                 0);
         }
     }
+
+    if (mostrarAvisoDestrancada && fonteMercado != NULL)
+    {
+        // Fundo da caixa de mensagem
+        al_draw_filled_rectangle(
+            200, 600, 1100, 750,
+            al_map_rgb(60, 40, 25));
+
+        // Borda dourada
+        al_draw_rectangle(
+            200, 600, 1100, 750,
+            al_map_rgb(230, 185, 85),
+            3);
+
+        // Titulo
+        al_draw_text(
+            fonteMercado,
+            al_map_rgb(255, 215, 120),
+            650, 630,
+            ALLEGRO_ALIGN_CENTER,
+            "CASA DESTRANCADA!");
+
+        // Primeira mensagem
+        al_draw_text(
+            fonteMercado,
+            al_map_rgb(255, 255, 255),
+            650, 655,
+            ALLEGRO_ALIGN_CENTER,
+            "Voce montou a chave da casa egipcia!");
+
+        // Segunda mensagem
+        al_draw_text(
+            fonteMercado,
+            al_map_rgb(255, 255, 255),
+            650, 680,
+            ALLEGRO_ALIGN_CENTER,
+            "Agora voce pode explorar a casa.");
+
+        // Instrucao
+        al_draw_text(
+            fonteMercado,
+            al_map_rgb(255, 255, 255),
+            650, 715,
+            ALLEGRO_ALIGN_CENTER,
+            "Pressione ESC para voltar ao mapa");
+    }
 }
 
 void liberar_mercado(void)
@@ -259,6 +323,11 @@ void liberar_mercado(void)
     {
         al_destroy_bitmap(ImagemPeçaVaso);
         ImagemPeçaVaso = NULL;
+    }
+    if (fonteMercado != NULL)
+    {
+        al_destroy_font(fonteMercado);
+        fonteMercado = NULL;
     }
     // o ponteiro não aponta mais para a imagem
     imagemMercado = NULL;
@@ -365,6 +434,16 @@ void soltar_peca_mercado(int mouseX, int mouseY)
         // marca a peça selecionada como encaixada
         pecaEncaixada[pecaArrastada] = true;
         printf("Peça %d encaixada \n", pecaArrastada + 1);
+    }
+    // Verifica se as quatro pecas foram encaixadas
+    if (pecaEncaixada[0] &&
+        pecaEncaixada[1] &&
+        pecaEncaixada[2] &&
+        pecaEncaixada[3] &&
+        !casaDestrancada)
+    {
+        casaDestrancada = true;
+        mostrarAvisoDestrancada = true;
     }
     // Para arrastar a peça
     pecaArrastada = -1;
