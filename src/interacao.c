@@ -63,81 +63,73 @@ void interacao_tecla(int tecla, float jogadorX, float jogadorY)
 
 void desenhar_interacao(void)
 {
+    // Guarda os textos que serao exibidos
+    const char *titulo;
+    const char *mensagem1;
+    const char *mensagem2;
+
     // Verifica se o aviso da cada esta aberto
     if (mostrarAvisoCasa)
     {
+        titulo = "CASA EGIPCIA";
+        mensagem1 = "A porta esta trancada.";
+        mensagem2 = "Procure uma pista no mercado.";
         // Desenha o fundo da caixa de mensagem
-        al_draw_filled_rectangle(
-            200, 600, 1100, 750,
-            al_map_rgb(60, 40, 25));
-
-        // Desenha a borda dourada
-        al_draw_rectangle(
-            200, 600, 1100, 750,
-            al_map_rgb(230, 185, 85),
-            3);
-
-        // Escreve o titulo
-        al_draw_text(
-            fonteAviso,
-            al_map_rgb(255, 215, 120),
-            650, 630,
-            ALLEGRO_ALIGN_CENTER,
-            "CASA EGIPCIA");
-
-        // Escreve a mensagem
-        al_draw_text(
-            fonteAviso,
-            al_map_rgb(255, 255, 255),
-            650, 675,
-            ALLEGRO_ALIGN_CENTER,
-            "A porta esta trancada. Procure uma pista no mercado.");
-
-        // Instrucao para fechar
-        al_draw_text(
-            fonteAviso,
-            al_map_rgb(255, 255, 255),
-            650, 715,
-            ALLEGRO_ALIGN_CENTER,
-            "Pressione E para fechar");
     }
     else if (mostrarAvisoMercado)
     {
-        // Desenha o fundo da caixa de mensagem
-        al_draw_filled_rectangle(
-            200, 600, 1100, 750,
-            al_map_rgb(60, 40, 25));
-
-        // Desenha a borda dourada
-        al_draw_rectangle(
-            200, 600, 1100, 750,
-            al_map_rgb(230, 185, 85),
-            3);
-
-        // Escreve o titulo
-        al_draw_text(
-            fonteAviso,
-            al_map_rgb(255, 215, 120),
-            650, 630,
-            ALLEGRO_ALIGN_CENTER,
-            "MERCADO EGÍPCIO");
-
-        // Escreve a mensagem
-        al_draw_text(
-            fonteAviso,
-            al_map_rgb(255, 255, 255),
-            650, 675,
-            ALLEGRO_ALIGN_CENTER,
-            "Entre as mercadorias existe uma pista para abrir a casa. Examine os objetos para descobrir o segredo.");
-
-        // Instrucao para fechar
-        al_draw_text(
-            fonteAviso,
-            al_map_rgb(255, 255, 255),
-            650, 715,
-            ALLEGRO_ALIGN_CENTER,
-            "Pressione E para fechar");
+        titulo = "MERCADO EGIPCIO";
+        mensagem1 = "Entre as mercadorias existe uma pista.";
+        mensagem2 = "Examine os objetos para descobrir o segredo.";
     }
+    else
+    {
+        return;
+    }
+    if (fonteAviso == NULL)
+        return;
+    // fundo da caixa de dialogo
+    al_draw_filled_rectangle(
+        200, 600, 1100, 750,
+        al_map_rgb(60, 40, 25));
+
+    // Desenha a borda dourada
+    al_draw_rectangle(
+        200, 600, 1100, 750,
+        al_map_rgb(230, 185, 85),
+        3);
+
+    // titulo
+    al_draw_text(
+        fonteAviso,
+        al_map_rgb(255, 215, 120),
+        650, 630,
+        ALLEGRO_ALIGN_CENTER,
+        titulo);
+
+    // mensagem1
+    al_draw_text(
+        fonteAviso,
+        al_map_rgb(255, 255, 255),
+        650, 655,
+        ALLEGRO_ALIGN_CENTER,
+        mensagem1);
+
+    // mensagem2
+    al_draw_text(
+        fonteAviso,
+        al_map_rgb(255, 255, 255),
+        650, 680,
+        ALLEGRO_ALIGN_CENTER,
+        mensagem2);
+
+    // Instrucao para fechar
+    al_draw_text(
+        fonteAviso,
+        al_map_rgb(255, 255, 255),
+        650, 715,
+        ALLEGRO_ALIGN_CENTER,
+        "Pressione E para fechar");
 }
 void liberar_interacao(void)
 {
