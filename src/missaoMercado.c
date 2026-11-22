@@ -32,11 +32,32 @@ bool inicia_mercado(void)
     // Carrega a imagem da peca da lua
     ImagemPeçaVaso = al_load_bitmap("assets/imagens/pecaVaso.png");
 
+    ImagemPeçaPapiro = al_load_bitmap("assets/imagens/pecaPapiro.png");
+    ImagemPeçaTinteiro = al_load_bitmap("assets/imagens/pecaTinteiro.png");
+    ImagemPeçaCaixote = al_load_bitmap("assets/imagens/pecaCaixote.png");
+
     if (ImagemPeçaVaso == NULL)
     {
-        printf("Erro ao carregar a peca da lua!\n");
+        printf("Erro ao carregar a peca do vaso!\n");
         return false;
     }
+
+        if (ImagemPeçaPapiro == NULL)
+    {
+        printf("Erro ao carregar a peca do papiro!\n");
+        return false;
+    }
+        if (ImagemPeçaTinteiro == NULL)
+    {
+        printf("Erro ao carregar a peca do tinteiro!\n");
+        return false;
+    }
+        if (ImagemPeçaCaixote == NULL)
+    {
+        printf("Erro ao carregar a peça do caixote!\n");
+        return false;
+    }
+
     // verfica se a imagem foi carregada
     if (imagemMercado == NULL)
     {
@@ -89,6 +110,33 @@ void desenhar_mercado(void)
             3 // espessura da borda
         );
     }
+        // Desenha borda vermelha se encontrou a peça
+    if (encontrouPecaPapiro)
+    {
+        al_draw_rectangle(
+            396, 380, 448, 438,
+            al_map_rgb(255, 0, 0),
+            3 // espessura da borda
+        );
+    }
+        // Desenha borda vermelha se encontrou a peça
+    if (encontrouPecaTinteiro)
+    {
+        al_draw_rectangle(
+            286, 504, 338, 564,
+            al_map_rgb(255, 0, 0),
+            3 // espessura da borda
+        );
+    }
+        // Desenha borda vermelha se encontrou a peça
+    if (encontrouPecaCaixote)
+    {
+        al_draw_rectangle(
+            1117, 671, 1172, 725,
+            al_map_rgb(255, 0, 0),
+            3 // espessura da borda
+        );
+    }
     // Se encontrou a peça do vaso, desenha no primeiro quadrado
     if (encontrouPecaVaso && ImagemPeçaVaso != NULL)
     {
@@ -97,7 +145,40 @@ void desenhar_mercado(void)
             0, 0,
             al_get_bitmap_width(ImagemPeçaVaso),
             al_get_bitmap_height(ImagemPeçaVaso),
-            850, 320, 
+            954, 312, 
+            80, 80,
+            0);
+    }
+        if (encontrouPecaPapiro && ImagemPeçaPapiro != NULL)
+    {
+        al_draw_scaled_bitmap(
+            ImagemPeçaPapiro,
+            0, 0,
+            al_get_bitmap_width(ImagemPeçaPapiro),
+            al_get_bitmap_height(ImagemPeçaPapiro),
+            954, 312, 
+            80, 80,
+            0);
+    }
+        if (encontrouPecaTinteiro && ImagemPeçaTinteiro != NULL)
+    {
+        al_draw_scaled_bitmap(
+            ImagemPeçaTinteiro,
+            0, 0,
+            al_get_bitmap_width(ImagemPeçaTinteiro),
+            al_get_bitmap_height(ImagemPeçaTinteiro),
+            857, 412, 
+            80, 80,
+            0);
+    }
+        if (encontrouPecaCaixote && ImagemPeçaCaixote != NULL)
+    {
+        al_draw_scaled_bitmap(
+            ImagemPeçaCaixote,
+            0, 0,
+            al_get_bitmap_width(ImagemPeçaCaixote),
+            al_get_bitmap_height(ImagemPeçaCaixote),
+            954, 412, 
             80, 80,
             0);
     }
@@ -134,6 +215,36 @@ void clique_objetos_mercado(int mouseX, int mouseY)
             if (!encontrouPecaVaso)
             {
                 encontrouPecaVaso = true;
+                printf("Encontrou pedaço da chave\n");
+            }
+        }
+                // verifica se o jogador clicou na peça do papiro
+        if (mouseX >= 396 && mouseX <= 448 && mouseY >= 380 && mouseY <= 438)
+        {
+            // marcar a peça como encontrada
+            if (!encontrouPecaPapiro)
+            {
+                encontrouPecaPapiro = true;
+                printf("Encontrou pedaço da chave\n");
+            }
+        }
+                // verifica se o jogador clicou na peça do vaso
+        if (mouseX >= 286 && mouseX <= 338 && mouseY >= 504 && mouseY <= 564)
+        {
+            // marcar a peça como encontrada
+            if (!encontrouPecaTinteiro)
+            {
+                encontrouPecaTinteiro = true;
+                printf("Encontrou pedaço da chave\n");
+            }
+        }
+                // verifica se o jogador clicou na peça do vaso
+        if (mouseX >= 1100 && mouseX <= 1142 && mouseY >= 650 && mouseY <= 697)
+        {
+            // marcar a peça como encontrada
+            if (!encontrouPecaCaixote)
+            {
+                encontrouPecaCaixote = true;
                 printf("Encontrou pedaço da chave\n");
             }
         }
