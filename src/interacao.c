@@ -2,6 +2,7 @@
 #include <allegro5/allegro_font.h> //permite escrever mensagem na tela
 #include <allegro5/allegro_primitives.h>
 #include "interacao.h"
+#include "missaoMercado.h"
 
 // ponteiro que guarda a referencia da fonte utilizada para escrever
 static ALLEGRO_FONT *fonteAviso = NULL;
@@ -12,10 +13,10 @@ static bool mostrarAvisoCasa = false;
 // Controla a abertura do aviso do mercado
 static bool mostrarAvisoMercado = false;
 
-//Controla abertura do aviso do lago
+// Controla abertura do aviso do lago
 static bool mostrarAvisoLago = false;
 
-//Controla abertura do aviso do templo
+// Controla abertura do aviso do templo
 static bool mostrarAvisoTemplo = false;
 
 // inicia a fonte que sera usada nas mensagens
@@ -34,6 +35,19 @@ bool iniciar_interacao(void)
 
 void interacao_tecla(int tecla, float jogadorX, float jogadorY)
 {
+    // se a mensagem estiver aberta o enter entra no mercado
+    if (tecla == ALLEGRO_KEY_ENTER && mostrarAvisoMercado)
+    {
+        mostrarAvisoMercado = false; // fecha o aviso
+        abrir_mercado();             // abre a imagem
+        return;
+    }
+    //Se nao apertou E, nao continua a interacao
+    if (tecla != ALLEGRO_KEY_E)
+    {
+        return; //se for diferente de E, sai da função 
+    }
+
     // Verifica se a tecla pressionada foi E
     if (tecla == ALLEGRO_KEY_E)
     {
@@ -48,11 +62,11 @@ void interacao_tecla(int tecla, float jogadorX, float jogadorY)
         {
             mostrarAvisoMercado = false;
         }
-        else if(mostrarAvisoLago)
+        else if (mostrarAvisoLago)
         {
             mostrarAvisoLago = false;
         }
-        else if(mostrarAvisoTemplo)
+        else if (mostrarAvisoTemplo)
         {
             mostrarAvisoTemplo = false;
         }
@@ -71,13 +85,13 @@ void interacao_tecla(int tecla, float jogadorX, float jogadorY)
             {
                 mostrarAvisoMercado = true;
             }
-            //Personagem proximo do lago
+            // Personagem proximo do lago
             else if (jogadorX >= 490 && jogadorX <= 740 &&
                      jogadorY >= 850 && jogadorY <= 955)
             {
                 mostrarAvisoLago = true;
             }
-            //Personagem proximo ao templo
+            // Personagem proximo ao templo
             else if (jogadorX >= 1080 && jogadorX <= 1235 &&
                      jogadorY >= 350 && jogadorY <= 470)
             {
@@ -108,7 +122,7 @@ void desenhar_interacao(void)
         mensagem1 = "Entre as mercadorias existe uma pista.";
         mensagem2 = "Examine os objetos para descobrir o segredo.";
     }
-    else if(mostrarAvisoLago)
+    else if (mostrarAvisoLago)
     {
         titulo = "Oasis";
         mensagem1 = "Descubra os segredos do Oasis";
@@ -120,7 +134,6 @@ void desenhar_interacao(void)
         mensagem1 = "A porta esta trancada conclua as missoes";
         mensagem2 = "Explore o mapa";
     }
-    
     else
     {
         return;
