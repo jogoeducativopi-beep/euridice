@@ -448,3 +448,6 @@ void soltar_peca_mercado(int mouseX, int mouseY)
     // Para arrastar a peça
     pecaArrastada = -1;
 }
+bool encontrou_chave_casa(void){
+    return casaDestrancada;
+}
