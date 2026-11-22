@@ -88,6 +88,11 @@ bool mercado_aberto(void)
 
 void desenhar_mercado(void)
 {
+    //se o mercado estiver fechado ou a imagem nao existir ele fecha a função sem desenhar
+    if (!mercadoAberto || imagemMercado ==NULL)
+    {
+        return;
+    }
     // verifica se a imagem foi carregada e o mercado aberto
     if (mercadoAberto && imagemMercado != NULL) // tel do mercado aberta e imagem mercado doferente de null
     {
@@ -145,7 +150,7 @@ void desenhar_mercado(void)
             0, 0,
             al_get_bitmap_width(ImagemPeçaVaso),
             al_get_bitmap_height(ImagemPeçaVaso),
-            954, 312, 
+            857, 312, 
             80, 80,
             0);
     }
