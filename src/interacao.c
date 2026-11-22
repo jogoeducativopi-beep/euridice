@@ -42,10 +42,10 @@ void interacao_tecla(int tecla, float jogadorX, float jogadorY)
         abrir_mercado();             // abre a imagem
         return;
     }
-    //Se nao apertou E, nao continua a interacao
+    // Se nao apertou E, nao continua a interacao
     if (tecla != ALLEGRO_KEY_E)
     {
-        return; //se for diferente de E, sai da função 
+        return; // se for diferente de E, sai da função
     }
 
     // Verifica se a tecla pressionada foi E
@@ -99,6 +99,11 @@ void interacao_tecla(int tecla, float jogadorX, float jogadorY)
             }
         }
     }
+}
+
+bool interacao_aberta(void)
+{
+    return mostrarAvisoCasa || mostrarAvisoMercado || mostrarAvisoLago || mostrarAvisoTemplo;
 }
 
 void desenhar_interacao(void)

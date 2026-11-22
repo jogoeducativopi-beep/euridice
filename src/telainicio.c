@@ -233,7 +233,7 @@ int main()
             }
 
             // Atualizar movimento no mapa
-            if (estado_atual == ESTADO_MAPA)
+            if (estado_atual == ESTADO_MAPA && !mercado_aberto() && !interacao_aberta())
             {
                 // Movimenta a personagem dentro do mundo
                 atualizar_posicao_personagem(LARGURA_MUNDO, ALTURA_MUNDO);
@@ -321,8 +321,14 @@ int main()
                 int mx = event.mouse.x;
                 int my = event.mouse.y;
 
+                // Verifica se o jogador esta dentro do mercado
+                if (estado_atual == ESTADO_MAPA && mercado_aberto())
+                {
+                    clique_objetos_mercado(mx, my);
+                }
+
                 // Clique do botão JOGAR
-                if (estado_atual == ESTADO_MENU)
+                else if (estado_atual == ESTADO_MENU)
                 {
                     if (mx >= btn_x &&
                         mx <= btn_x + btn_largura &&

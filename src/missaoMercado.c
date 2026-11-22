@@ -68,3 +68,11 @@ void liberar_mercado(void)
     //o ponteiro não aponta mais para a imagem
     imagemMercado = NULL;
 }
+void clique_objetos_mercado(int mouseX, int mouseY)
+{
+    if (mercadoAberto) //verifique se o mercado esta ativado
+    {
+        printf("Clique no mercado: X= %d, Y= %d \n", mouseX,mouseY);
+    }
+    
+}
