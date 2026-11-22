@@ -158,7 +158,7 @@ void desenhar_mercado(void)
         );
     }
     // Se encontrou a peça do vaso, desenha no primeiro quadrado
-    if (encontrouPecaVaso && ImagemPeçaVaso != NULL)
+    if (encontrouPecaVaso && ImagemPeçaVaso != NULL && pecaArrastada != 0)
     {
         al_draw_scaled_bitmap(
             ImagemPeçaVaso,
@@ -169,7 +169,7 @@ void desenhar_mercado(void)
             80, 80,
             0);
     }
-        if (encontrouPecaPapiro && ImagemPeçaPapiro != NULL)
+        if (encontrouPecaPapiro && ImagemPeçaPapiro != NULL && pecaArrastada !=1)
     {
         al_draw_scaled_bitmap(
             ImagemPeçaPapiro,
@@ -180,7 +180,7 @@ void desenhar_mercado(void)
             80, 80,
             0);
     }
-        if (encontrouPecaTinteiro && ImagemPeçaTinteiro != NULL)
+        if (encontrouPecaTinteiro && ImagemPeçaTinteiro != NULL && pecaArrastada != 2)
     {
         al_draw_scaled_bitmap(
             ImagemPeçaTinteiro,
@@ -191,7 +191,7 @@ void desenhar_mercado(void)
             80, 80,
             0);
     }
-        if (encontrouPecaCaixote && ImagemPeçaCaixote != NULL)
+        if (encontrouPecaCaixote && ImagemPeçaCaixote != NULL && pecaArrastada !=3)
     {
         al_draw_scaled_bitmap(
             ImagemPeçaCaixote,
@@ -202,6 +202,28 @@ void desenhar_mercado(void)
             80, 80,
             0);
     }
+
+    //vetor que guarda as quatro imagens das peças
+    ALLEGRO_BITMAP * imagensPecas[TOTAL_PECAS] = {
+        ImagemPeçaVaso, ImagemPeçaPapiro,ImagemPeçaTinteiro,ImagemPeçaCaixote
+    };
+    //desenha a peça selencionada acompanhando o mouse
+    if (pecaArrastada !=-1)
+    {
+        ALLEGRO_BITMAP * peca = imagensPecas[pecaArrastada];
+        if(peca != NULL){
+            al_draw_scaled_bitmap(
+            peca,
+            0, 0,
+            al_get_bitmap_width(peca),
+            al_get_bitmap_height(peca),
+            mouseArrasteX - 40,
+            mouseArrasteY - 40,
+            80, 80, //nossa peça mede 80 subtraimos metade para que o centro acompanhe o cursor
+            0);
+        }
+    }
+    
 }
 
 void liberar_mercado(void)
@@ -295,9 +317,15 @@ void iniciar_arraste_mercado(int mouseX, int mouseY){
                 mouseArrasteY = mouseY;
                 printf("Iniciou arraste da peça %d \n", i+1);
                 return;
-            }
-            
-        }
-        
+            }   
+        } 
+    }
+}
+void mover_peca_mercado(int mouseX, int mouseY){
+    // verifica se alguma peça esta sendo arrastada
+    if(mercadoAberto && pecaArrastada != -1){
+        //atualiza a posição do mouse
+        mouseArrasteX = mouseX;
+        mouseArrasteY = mouseY;
     }
 }

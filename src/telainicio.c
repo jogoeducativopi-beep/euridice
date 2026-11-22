@@ -312,6 +312,17 @@ int main()
             }
         }
 
+        //Detecta movimento do mouse
+        else if (event.type == ALLEGRO_EVENT_MOUSE_AXES) //evento que identifica os movimentos do mouse
+        {
+            if (estado_atual == ESTADO_MAPA && mercado_aberto())
+            {
+                mover_peca_mercado(event.mouse.x, event.mouse.y);
+            }
+            
+        }
+        
+
         // Clique do botão JOGAR e mouse
 
         else if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
