@@ -52,7 +52,7 @@ int main()
     if (!inicia_mercado())
     {
         printf("Nao foi possivel carregar o mercado.\n");
-        return -1; //o if so sera executado quando o carregamento falhar
+        return -1; // o if so sera executado quando o carregamento falhar
     }
 
     // Inicialização do áudio
@@ -256,7 +256,17 @@ int main()
         { // fecha o jogo ao pressionar esc
             if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
             {
-                running = false;
+                // Verifica se a tela do mercado esta aberta
+                if (mercado_aberto())
+                {
+                    // Fecha apenas o mercado e volta ao mapa
+                    fechar_mercado();
+                }
+                else
+                {
+                    // Se nao estiver no mercado, encerra o jogo
+                    running = false;
+                }
             }
             // Precionar espaço com a carta aberta
             else if (event.keyboard.keycode == ALLEGRO_KEY_SPACE)
@@ -493,7 +503,7 @@ int main()
                 }
                 // Desenha as mensagens por cima do mapa
                 desenhar_interacao();
-                //desenha o mercado por cima do mapa 
+                // desenha o mercado por cima do mapa
                 desenhar_mercado();
             }
 
