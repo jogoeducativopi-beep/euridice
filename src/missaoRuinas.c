@@ -234,7 +234,7 @@ void desenhar_missao_ruinas(void)
             al_map_rgb(255, 215, 120),
             650, 615,
             ALLEGRO_ALIGN_CENTER,
-            "Qual simbolo egipcio representava a vida?"
+            "Qual era uma das principais funções das pirâmides no Egito Antigo?"
         );
 
         al_draw_text(
@@ -242,7 +242,7 @@ void desenhar_missao_ruinas(void)
             al_map_rgb(255, 255, 255),
             650, 645,
             ALLEGRO_ALIGN_CENTER,
-            "1 - Ankh (cruz ansata)"
+            "1 - Servir como túmulos de faraós"
         );
 
         al_draw_text(
@@ -250,7 +250,7 @@ void desenhar_missao_ruinas(void)
             al_map_rgb(255, 255, 255),
             650, 665,
             ALLEGRO_ALIGN_CENTER,
-            "2 - Obelisco"
+            "2 - Funcionar como escolas"
         );
 
         al_draw_text(
@@ -258,7 +258,7 @@ void desenhar_missao_ruinas(void)
             al_map_rgb(255, 255, 255),
             650, 685,
             ALLEGRO_ALIGN_CENTER,
-            "3 - Escaravelho"
+            "3 - Armazenar alimentos"
         );
 
         if (respostaErrada)
