@@ -333,8 +333,9 @@ int main()
     bool redraw = true;
     bool mostrar_colisoes = false;
 
-    // Controla a mensagem das setas
-    bool mostrarInstrucaoSetas = true;
+    // Tempo do tutorial de movimentacao
+    // 300 frames = 5 segundos em 60 FPS
+    int tempoInstrucaoSetas = 300;
 
     float tempo_carta = 0; // Movimento da carta
 
@@ -356,6 +357,18 @@ int main()
         if (event.type == ALLEGRO_EVENT_TIMER)
         {
             redraw = true;
+
+            // Atualiza o tempo do tutorial de movimentacao
+            if (estado_atual == ESTADO_MAPA &&
+                tempoInstrucaoSetas > 0 &&
+                !interacao_aberta() &&
+                !mercado_aberto() &&
+                !casa_aberta() &&
+                !missao_ruinas_aberta())
+            {
+                tempoInstrucaoSetas--;
+            }
+
 
             // Atualiza o movimento da carta
             if (estado_atual == ESTADO_JOGO)
@@ -433,15 +446,6 @@ int main()
 
                 // movimento do personagem
                 personagem_tecla(event.keyboard.keycode, true);
-
-                // Esconde a instrucao quando o jogador apertar uma seta
-                if (event.keyboard.keycode == ALLEGRO_KEY_UP ||
-                    event.keyboard.keycode == ALLEGRO_KEY_DOWN ||
-                    event.keyboard.keycode == ALLEGRO_KEY_LEFT ||
-                    event.keyboard.keycode == ALLEGRO_KEY_RIGHT)
-                {
-                    mostrarInstrucaoSetas = false;
-                }
 
                 // Verifica se o jogador quer interagir com algum local
                 interacao_tecla(
@@ -702,24 +706,50 @@ int main()
                     posicaoCameraX(),
                     posicaoCameraY());
 
-                // Instrucao de movimentacao do personagem
+            // Instrucao de movimentacao do personagem   
+            // Animação do tut
+            if (fonte_carta != NULL &&
+                tempoInstrucaoSetas > 0 &&
+                !interacao_aberta() &&
+                !mercado_aberto() &&
+                !casa_aberta() &&
+                !missao_ruinas_aberta())
+            {
+                int transparenciaTexto = 255;
+                int transparenciaFundo = 220;
 
-                if (fonte_carta && mostrarInstrucaoSetas) // mostra ate aperta na seta
+                // No ultimo segundo, desaparece suavemente
+                if (tempoInstrucaoSetas <= 60)
                 {
-                    // Fundo da mensagem
-                    al_draw_filled_rectangle(
-                        390, 740, 910, 785,
-                        al_map_rgba(60, 40, 25, 220));
+                    transparenciaTexto =
+                        tempoInstrucaoSetas * 255 / 60;
 
-                    // Texto da mensagem
-                    al_draw_text(
-                        fonte_carta,
-                        al_map_rgb(255, 215, 120),
-                        650, 745,
-                        ALLEGRO_ALIGN_CENTER,
-                        "Use as SETAS para se movimentar");
+                    transparenciaFundo =
+                        tempoInstrucaoSetas * 220 / 60;
                 }
 
+                // Fundo marrom transparente
+                al_draw_filled_rectangle(
+                    390, 740, 910, 785,
+                    al_map_rgba(
+                        60, 40, 25,
+                        transparenciaFundo
+                    )
+                );
+
+                // Texto dourado
+                al_draw_text(
+                    fonte_carta,
+                    al_map_rgba(
+                        255, 215, 120,
+                        transparenciaTexto
+                    ),
+                    650, 745,
+                    ALLEGRO_ALIGN_CENTER,
+                    "Use SETAS ou WASD para se movimentar"
+                );
+            }
+    
                 // Mostra as colisoes dos objetos
                 if (mostrar_colisoes)
                 {
@@ -757,14 +787,6 @@ int main()
                     desenhar_colisao_personagem(
                         posicaoCameraX(),
                         posicaoCameraY());
-                }
-
-                // Mostra o progresso enquanto explora o mapa
-                if (!mercado_aberto() &&
-                    !casa_aberta() &&
-                    !missao_ruinas_aberta())
-                {
-                    desenhar_contador_chaves(fonte_carta);
                 }
                 // Desenha as mensagens por cima do mapa
                 desenhar_interacao();
