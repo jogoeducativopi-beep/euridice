@@ -14,6 +14,7 @@
 #include <allegro5/allegro_ttf.h>
 #include "interacao.h"
 #include "missaoMercado.h"
+#include "missaoCasa.h"
 
 #define LARGURA_TELA 1300
 #define ALTURA_TELA 800
@@ -120,6 +121,11 @@ int main()
     if (!iniciar_interacao())
     {
         printf("Erro ao iniciar as interacoes!\n");
+    }
+    // Carrega o interior da casa
+    if (!iniciar_casa())
+    {
+        printf("Erro ao iniciar a casa!\n");
     }
 
     al_set_window_title(display, "Euridice");
@@ -252,7 +258,8 @@ int main()
             }
 
             // Atualizar movimento no mapa
-            if (estado_atual == ESTADO_MAPA && !mercado_aberto() && !interacao_aberta())
+            if (estado_atual == ESTADO_MAPA && !mercado_aberto() 
+            && !interacao_aberta() && !casa_aberta())
             {
                 // Movimenta a personagem dentro do mundo
                 atualizar_posicao_personagem(LARGURA_MUNDO, ALTURA_MUNDO);
@@ -280,6 +287,10 @@ int main()
                 {
                     // Fecha apenas o mercado e volta ao mapa
                     fechar_mercado();
+                }
+                else if (casa_aberta())
+                {
+                    fechar_casa();
                 }
                 else
                 {
@@ -634,6 +645,8 @@ int main()
                 desenhar_interacao();
                 // desenha o mercado por cima do mapa
                 desenhar_mercado();
+                // desenha o interior da casa por cima do mapa
+                desenhar_casa();
             }
 
             al_flip_display(); // esse comando atualiza a imagem
@@ -652,6 +665,7 @@ int main()
     // Libera os recursos das mensagens
     liberar_interacao();
     liberar_mercado();
+    liberar_casa();
     al_destroy_display(display);
 
     // Libera a imagem do templo - Esse comando evita que a imagem ocupa a memória depos que o jogo fechar

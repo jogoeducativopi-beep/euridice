@@ -3,6 +3,7 @@
 #include <allegro5/allegro_primitives.h>
 #include "interacao.h"
 #include "missaoMercado.h"
+#include "missaoCasa.h"
 
 // ponteiro que guarda a referencia da fonte utilizada para escrever
 static ALLEGRO_FONT *fonteAviso = NULL;
@@ -35,6 +36,21 @@ bool iniciar_interacao(void)
 
 void interacao_tecla(int tecla, float jogadorX, float jogadorY)
 {
+    // Nao executa interacoes do mapa enquanto estiver na casa
+    if (casa_aberta())
+    {
+        return;
+    }
+
+    // Enter abre a casa somente se estiver destrancada
+    if (tecla == ALLEGRO_KEY_ENTER &&
+        mostrarAvisoCasa &&
+        encontrou_chave_casa())
+    {
+        mostrarAvisoCasa = false;
+        abrir_casa();
+        return;
+    }
     // se a mensagem estiver aberta o enter entra no mercado
     if (tecla == ALLEGRO_KEY_ENTER && mostrarAvisoMercado)
     {
@@ -106,7 +122,7 @@ bool interacao_aberta(void)
     return mostrarAvisoCasa || mostrarAvisoMercado || mostrarAvisoLago || mostrarAvisoTemplo;
 }
 
-// Esse comando verifica se o personagem esta perto de um algum local 
+// Esse comando verifica se o personagem esta perto de um algum local
 bool jogador_perto_interacao(float jogadorX, float jogadorY)
 {
     // Casa egipcia
@@ -151,9 +167,17 @@ void desenhar_interacao(void)
     if (mostrarAvisoCasa)
     {
         titulo = "CASA EGIPCIA";
-        mensagem1 = "A porta esta trancada.";
-        mensagem2 = "Procure uma pista no mercado.";
-        // Desenha o fundo da caixa de mensagem
+
+        if (encontrou_chave_casa())
+        {
+            mensagem1 = "A porta esta destrancada!";
+            mensagem2 = "Pressione ENTER para entrar.";
+        }
+        else
+        {
+            mensagem1 = "A porta esta trancada.";
+            mensagem2 = "Procure pistas no mercado.";
+        }
     }
     else if (mostrarAvisoMercado)
     {
