@@ -4,6 +4,7 @@
 #include "interacao.h"
 #include "missaoMercado.h"
 #include "missaoCasa.h"
+#include "missaoRuinas.h"
 
 // ponteiro que guarda a referencia da fonte utilizada para escrever
 static ALLEGRO_FONT *fonteAviso = NULL;
@@ -44,6 +45,26 @@ void interacao_tecla(int tecla, float jogadorX, float jogadorY)
     {
         return;
     }
+
+     
+    // Se o enigma estiver aberto, recebe as respostas
+    if (missao_ruinas_aberta())
+    {
+        missao_ruinas_tecla(tecla, jogadorX, jogadorY);
+        return;
+    }
+
+    // Permite investigar as ruinas ao apertar E
+    if (tecla == ALLEGRO_KEY_E &&
+        missao_ruinas_perto(jogadorX, jogadorY) &&
+        !interacao_aberta() &&
+        !mercado_aberto())
+    {
+        missao_ruinas_tecla(tecla, jogadorX, jogadorY);
+        return;
+    }
+
+
 
     // Enter abre a casa somente se estiver destrancada
     if (tecla == ALLEGRO_KEY_ENTER &&
@@ -105,18 +126,20 @@ void interacao_tecla(int tecla, float jogadorX, float jogadorY)
                 mostrarAvisoMercado = true;
             }
             // Personagem proximo do lago
+            
+            // Personagem proximo do oasis
             else if (jogadorX >= 490 && jogadorX <= 740 &&
                      jogadorY >= 850 && jogadorY <= 955)
             {
                 mostrarAvisoLago = true;
+                // So encontra a segunda chave se
+                // concluiu a casa e encontrou o mapa
+                if (encontrou_chave_templo_casa() &&
+                    encontrou_mapa_oasis())
+                {
+                    chaveOasisEncontrada = true;
+                }
             }
-            //verifica se o jogador encontrou o mapa na casa 
-            if (encontrou_mapa_oasis())
-            {
-                //registra a segunda chave do templo
-                chaveOasisEncontrada = true;
-            }
-            
             // Personagem proximo ao templo
             else if (jogadorX >= 1080 && jogadorX <= 1235 &&
                      jogadorY >= 350 && jogadorY <= 470)
@@ -129,12 +152,18 @@ void interacao_tecla(int tecla, float jogadorX, float jogadorY)
 
 bool interacao_aberta(void)
 {
-    return mostrarAvisoCasa || mostrarAvisoMercado || mostrarAvisoLago || mostrarAvisoTemplo;
+    return mostrarAvisoCasa || mostrarAvisoMercado || mostrarAvisoLago || mostrarAvisoTemplo || missao_ruinas_aberta();
 }
 
 // Esse comando verifica se o personagem esta perto de um algum local
 bool jogador_perto_interacao(float jogadorX, float jogadorY)
 {
+
+    if (missao_ruinas_perto(jogadorX, jogadorY))
+    {
+        return true;
+    }
+
     // Casa egipcia
     if (jogadorX >= 480 && jogadorX <= 660 &&
         jogadorY >= 1300 && jogadorY <= 1450)
@@ -256,11 +285,23 @@ void desenhar_interacao(void)
         ALLEGRO_ALIGN_CENTER,
         mensagem2);
 
+    // Pista para a proxima missao
+    if (mostrarAvisoLago && chaveOasisEncontrada)
+    {
+        al_draw_text(
+            fonteAviso,
+            al_map_rgb(255, 215, 120),
+            650, 700,
+            ALLEGRO_ALIGN_CENTER,
+            "Na chave, ha o desenho de um antigo arco de pedra..."
+        );
+    }
+
     // Instrucao para fechar
     al_draw_text(
         fonteAviso,
         al_map_rgb(255, 255, 255),
-        650, 715,
+        650, 730,
         ALLEGRO_ALIGN_CENTER,
         "Pressione E para fechar");
 }

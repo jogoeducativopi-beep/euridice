@@ -15,6 +15,7 @@
 #include "interacao.h"
 #include "missaoMercado.h"
 #include "missaoCasa.h"
+#include "missaoRuinas.h"
 
 #define LARGURA_TELA 1300
 #define ALTURA_TELA 800
@@ -25,6 +26,106 @@ typedef enum
     ESTADO_JOGO,
     ESTADO_MAPA
 } EstadoJogo;
+
+// CONTADOR DE CHAVES
+void desenhar_contador_chaves(ALLEGRO_FONT *fonte)
+{
+    if (fonte == NULL)
+        return;
+
+    // Conta quantas chaves o jogador conquistou
+    int totalChaves = 0;
+
+    if (encontrou_chave_templo_casa())
+        totalChaves++;
+
+    if (encontrou_chave_oasis())
+        totalChaves++;
+
+    if (encontrou_terceira_chave())
+        totalChaves++;
+
+    // Calcula a porcentagem
+    int porcentagem = (totalChaves * 100 + 1) / 3;
+
+    // Posicao do contador na tela
+    float x = 965;
+    float y = 20;
+    float largura = 310;
+    float altura = 130;
+
+    // Fundo marrom
+    al_draw_filled_rounded_rectangle(
+        x, y,
+        x + largura, y + altura,
+        12, 12,
+        al_map_rgba(50, 35, 25, 230)
+    );
+
+    // Borda dourada
+    al_draw_rounded_rectangle(
+        x, y,
+        x + largura, y + altura,
+        12, 12,
+        al_map_rgb(230, 185, 85),
+        2
+    );
+
+    // Titulo
+    al_draw_text(
+        fonte,
+        al_map_rgb(255, 215, 120),
+        x + largura / 2, y + 12,
+        ALLEGRO_ALIGN_CENTER,
+        "CHAVES DO TEMPLO"
+    );
+
+    // Textos que mudam automaticamente
+    char textoChaves[20];
+    char textoPorcentagem[20];
+
+    sprintf(textoChaves, "%d/3", totalChaves);
+    sprintf(textoPorcentagem, "%d%%", porcentagem);
+
+    // Quantidade de chaves
+    al_draw_text(
+        fonte,
+        al_map_rgb(255, 255, 255),
+        x + 20, y + 53,
+        0,
+        textoChaves
+    );
+
+    // Porcentagem
+    al_draw_text(
+        fonte,
+        al_map_rgb(255, 215, 120),
+        x + largura - 20, y + 53,
+        ALLEGRO_ALIGN_RIGHT,
+        textoPorcentagem
+    );
+
+    // Fundo da barra de progresso
+    al_draw_filled_rectangle(
+        x + 20, y + 100,
+        x + largura - 20, y + 115,
+        al_map_rgb(100, 80, 55)
+    );
+
+    // Parte preenchida da barra
+    float larguraBarra = (largura - 40) *
+                         (totalChaves / 3.0f);
+
+    if (totalChaves > 0)
+    {
+        al_draw_filled_rectangle(
+            x + 20, y + 100,
+            x + 20 + larguraBarra, y + 115,
+            al_map_rgb(230, 185, 85)
+        );
+    }
+}
+
 
 int main()
 {
@@ -239,6 +340,11 @@ int main()
 
     bool carta_esta_aberta = false; // Esse comando é da abertura e fechamento da carta
 
+    if (!iniciar_missao_ruinas())
+    {
+        printf("Erro ao iniciar missao das ruinas!\n");
+    }
+
     al_start_timer(timer);
 
     // Loop principal
@@ -281,8 +387,12 @@ int main()
         { // fecha o jogo ao pressionar esc
             if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
             {
+                if(missao_ruinas_aberta())
+                {
+                    fechar_missao_ruinas();
+                }
                 // Verifica se a tela do mercado esta aberta
-                if (mercado_aberto())
+                else if (mercado_aberto())
                 {
                     // Fecha apenas o mercado e volta ao mapa
                     fechar_mercado();
@@ -648,12 +758,22 @@ int main()
                         posicaoCameraX(),
                         posicaoCameraY());
                 }
+
+                // Mostra o progresso enquanto explora o mapa
+                if (!mercado_aberto() &&
+                    !casa_aberta() &&
+                    !missao_ruinas_aberta())
+                {
+                    desenhar_contador_chaves(fonte_carta);
+                }
                 // Desenha as mensagens por cima do mapa
                 desenhar_interacao();
                 // desenha o mercado por cima do mapa
                 desenhar_mercado();
                 // desenha o interior da casa por cima do mapa
                 desenhar_casa();
+                // Mostra a missao das ruinas sobre o mapa
+                desenhar_missao_ruinas();
             }
 
             al_flip_display(); // esse comando atualiza a imagem
@@ -673,6 +793,7 @@ int main()
     liberar_interacao();
     liberar_mercado();
     liberar_casa();
+    liberar_missao_ruinas();
     al_destroy_display(display);
 
     // Libera a imagem do templo - Esse comando evita que a imagem ocupa a memória depos que o jogo fechar

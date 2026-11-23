@@ -278,3 +278,8 @@ bool encontrou_mapa_oasis(void)
 {
     return mapaOasisEncontrado;
 }
+
+bool encontrou_chave_templo_casa(void)
+{
+    return encontrouChaveTemploCasa;
+}

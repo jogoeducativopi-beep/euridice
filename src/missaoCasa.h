@@ -30,4 +30,6 @@ void responder_enigma_casa(int tecla);
 //verificar se encontrou o mapa
 bool encontrou_mapa_oasis(void);
 
+bool encontrou_chave_templo_casa(void);
+
 #endif

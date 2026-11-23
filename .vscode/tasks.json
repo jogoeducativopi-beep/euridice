@@ -18,6 +18,7 @@
                 "${workspaceFolder}/src/interacao.c",
                 "${workspaceFolder}/src/missaoCasa.c",
                 "${workspaceFolder}/src/missaoMercado.c",
+                "${workspaceFolder}/src/missaoRuinas.c",
                 "-o",
                 "${workspaceFolder}/jogo.exe",
                 "-lallegro_primitives",
