@@ -20,6 +20,9 @@ static bool mostrarAvisoLago = false;
 // Controla abertura do aviso do templo
 static bool mostrarAvisoTemplo = false;
 
+// Guarda se o jogador encontrou a segunda chave do templo
+static bool chaveOasisEncontrada = false;
+
 // inicia a fonte que sera usada nas mensagens
 bool iniciar_interacao(void)
 {
@@ -107,6 +110,13 @@ void interacao_tecla(int tecla, float jogadorX, float jogadorY)
             {
                 mostrarAvisoLago = true;
             }
+            //verifica se o jogador encontrou o mapa na casa 
+            if (encontrou_mapa_oasis())
+            {
+                //registra a segunda chave do templo
+                chaveOasisEncontrada = true;
+            }
+            
             // Personagem proximo ao templo
             else if (jogadorX >= 1080 && jogadorX <= 1235 &&
                      jogadorY >= 350 && jogadorY <= 470)
@@ -188,8 +198,16 @@ void desenhar_interacao(void)
     else if (mostrarAvisoLago)
     {
         titulo = "Oasis";
-        mensagem1 = "Descubra os segredos do Oasis";
-        mensagem2 = "Escave o Tesouso do Oasis";
+        if (chaveOasisEncontrada)
+        {
+            mensagem1 = "O mapa revelou onde estar o tesouso.";
+            mensagem2 = "Encontrou a segunda chave do templo.";
+        }
+        else
+        {
+            mensagem1 = "Voce ainda nao sabe onde esta o tesouro.";
+            mensagem2 = "Procure um mapa dentro da casa egipcia.";
+        }
     }
     else if (mostrarAvisoTemplo)
     {
@@ -257,4 +275,8 @@ void liberar_interacao(void)
         // Indica que o ponteiro nao aponta mais para uma fonte
         fonteAviso = NULL;
     }
+}
+bool encontrou_chave_oasis(void)
+{
+    return chaveOasisEncontrada;
 }

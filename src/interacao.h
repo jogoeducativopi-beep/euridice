@@ -20,4 +20,7 @@ bool jogador_perto_interacao(float jogadorX, float jogadorY);
 //libera a memoria
 void liberar_interacao(void);
 
+//se esta com a chave
+bool encontrou_chave_oasis(void);
+
 #endif
