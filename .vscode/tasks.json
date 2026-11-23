@@ -15,6 +15,9 @@
                 "${workspaceFolder}/src/colisao.c",
                 "${workspaceFolder}/src/mapa.c",
                 "${workspaceFolder}/src/personagem.c",
+                "${workspaceFolder}/src/interacao.c",
+                "${workspaceFolder}/src/missaoCasa.c",
+                "${workspaceFolder}/src/missaoMercado.c",
                 "-o",
                 "${workspaceFolder}/jogo.exe",
                 "-lallegro_primitives",
@@ -24,17 +27,19 @@
                 "-lallegro_audio",
                 "-lallegro_acodec",
                 "-lallegro_dialog",
-                "-lallegro"
+                "-lallegro",
+                "-lm"
             ],
-            "problemMatcher": [
-                "$gcc"
-            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "PATH": "C:/msys64/ucrt64/bin;${env:PATH}"
+                }
+            },
+            "problemMatcher": ["$gcc"],
             "group": {
                 "kind": "build",
                 "isDefault": true
-            },
-            "options": {
-                "cwd": "${workspaceFolder}"
             }
         }
     ]
