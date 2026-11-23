@@ -339,6 +339,11 @@ int main()
 
     float tempo_carta = 0; // Movimento da carta
 
+    // Controla o brilho do aviso de interacao
+    float tempoPulsoInteracao = 0.0f;
+    // Controla a aparicao suave do aviso
+    float opacidadeInteracao = 0.0f;
+
     bool carta_esta_aberta = false; // Esse comando é da abertura e fechamento da carta
 
     if (!iniciar_missao_ruinas())
@@ -357,6 +362,42 @@ int main()
         if (event.type == ALLEGRO_EVENT_TIMER)
         {
             redraw = true;
+
+            // Atualiza a animacao do aviso de interacao
+            if (estado_atual == ESTADO_MAPA)
+            {
+                tempoPulsoInteracao += 1.0f / 60.0f;
+
+                // Verifica se pode mostrar o aviso
+                bool perto = jogador_perto_interacao(
+                    personagem_centro_x(),
+                    personagem_centro_y()
+                );
+
+                bool podeMostrar = perto &&
+                    !interacao_aberta() &&
+                    !mercado_aberto() &&
+                    !casa_aberta() &&
+                    !missao_ruinas_aberta();
+
+                if (podeMostrar)
+                {
+                    // Aparece suavemente
+                    opacidadeInteracao += 0.05f;
+
+                    if (opacidadeInteracao > 1.0f)
+                        opacidadeInteracao = 1.0f;
+                }
+                else
+                {
+                    // Desaparece suavemente
+                    opacidadeInteracao -= 0.05f;
+
+                    if (opacidadeInteracao < 0.0f)
+                        opacidadeInteracao = 0.0f;
+                }
+            }
+
 
             // Atualiza o tempo do tutorial de movimentacao
             if (estado_atual == ESTADO_MAPA &&
@@ -764,22 +805,52 @@ int main()
                     posicaoCameraY());
 
                 // Mostra a tecla E quando o personagem esta perto de um local
-                if (jogador_perto_interacao(
-                        personagem_centro_x(),
-                        personagem_centro_y()) &&
-                    !interacao_aberta())
+                
+                // Animação aparecendo suavemente 
+                if (fonte_carta != NULL &&
+                    opacidadeInteracao > 0.0f &&
+                    !interacao_aberta() &&
+                    !mercado_aberto() &&
+                    !casa_aberta() &&
+                    !missao_ruinas_aberta())
                 {
-                    al_draw_filled_rectangle(
-                        530, 30, 770, 75,
-                        al_map_rgba(60, 40, 25, 220));
+                    // Brilho dourado pulsante
+                    float pulso =
+                        (sinf(tempoPulsoInteracao * 4.0f) + 1.0f) / 2.0f;
 
+                    int brilhoBorda = 110 + (int)(145 * pulso);
+                    int brilhoTexto = 190 + (int)(65 * pulso);
+
+                    // Aplica o fade-in e fade-out ao brilho
+                    int alphaFundo = (int)(210 * opacidadeInteracao);
+                    int alphaBorda = (int)(brilhoBorda * opacidadeInteracao);
+                    int alphaTexto = (int)(brilhoTexto * opacidadeInteracao);
+
+                    // Fundo marrom
+                    al_draw_filled_rounded_rectangle(
+                        530, 30, 770, 75,
+                        10, 10,
+                        al_map_rgba(60, 40, 25, alphaFundo)
+                    );
+
+                    // Borda dourada pulsante
+                    al_draw_rounded_rectangle(
+                        530, 30, 770, 75,
+                        10, 10,
+                        al_map_rgba(255, 215, 120, alphaBorda),
+                        2.5f
+                    );
+
+                    // Texto do aviso
                     al_draw_text(
                         fonte_carta,
-                        al_map_rgb(255, 215, 120),
+                        al_map_rgba(255, 215, 120, alphaTexto),
                         650, 38,
                         ALLEGRO_ALIGN_CENTER,
-                        "[E] Interagir");
+                        "[E] Interagir"
+                    );
                 }
+
 
                 // Mostra a hitbox dos pes
                 if (mostrar_colisoes)
@@ -796,6 +867,16 @@ int main()
                 desenhar_casa();
                 // Mostra a missao das ruinas sobre o mapa
                 desenhar_missao_ruinas();
+                   
+                // Contador de chaves do templo
+                if (fonte_carta != NULL &&
+                    !mercado_aberto() &&
+                    !casa_aberta() &&
+                    !missao_ruinas_aberta() &&
+                    !interacao_aberta())
+                {
+                    desenhar_contador_chaves(fonte_carta);
+                }
             }
 
             al_flip_display(); // esse comando atualiza a imagem
