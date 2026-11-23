@@ -24,4 +24,7 @@ void clique_objetos_casa(int mouseX, int mouseY);
 // Libera a imagem da memoria
 void liberar_casa(void);
 
+//recebe a resposta 
+void responder_enigma_casa(int tecla);
+
 #endif

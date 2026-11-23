@@ -258,8 +258,7 @@ int main()
             }
 
             // Atualizar movimento no mapa
-            if (estado_atual == ESTADO_MAPA && !mercado_aberto() 
-            && !interacao_aberta() && !casa_aberta())
+            if (estado_atual == ESTADO_MAPA && !mercado_aberto() && !interacao_aberta() && !casa_aberta())
             {
                 // Movimenta a personagem dentro do mundo
                 atualizar_posicao_personagem(LARGURA_MUNDO, ALTURA_MUNDO);
@@ -348,6 +347,8 @@ int main()
             if (estado_atual == ESTADO_MAPA)
             {
                 personagem_tecla(event.keyboard.keycode, false);
+                //verifica a resposta do enigma
+                responder_enigma_casa(event.keyboard.keycode);
             }
         }
 
@@ -369,8 +370,14 @@ int main()
                 int mx = event.mouse.x;
                 int my = event.mouse.y;
 
+                if (estado_atual == ESTADO_MAPA && casa_aberta())
+                {
+                    //Clique nos objetos do interior da casa
+                    clique_objetos_casa(mx, my);
+                }
+
                 // Verifica se o jogador esta dentro do mercado
-                if (estado_atual == ESTADO_MAPA && mercado_aberto())
+                else if (estado_atual == ESTADO_MAPA && mercado_aberto())
                 {
                     clique_objetos_mercado(mx, my);
 
