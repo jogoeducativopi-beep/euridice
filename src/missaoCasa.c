@@ -128,7 +128,9 @@ void desenhar_casa(void)
             al_draw_text(
                 fonteCasa, al_map_rgb(255, 215, 120),
                 650, 725, ALLEGRO_ALIGN_CENTER,
-                "Correto! Primeira chave encontrada! ENTER para fechar.");
+                mapaOasisEncontrado
+                    ? "MISSAO DA CASA CONCLUIDA! ENTER para fechar."
+                    : "Correto! Primeira chave encontrada! ENTER para fechar.");
         }
         else if (respostaVaso == 2)
         {
@@ -139,7 +141,7 @@ void desenhar_casa(void)
         }
     }
     // mensagem do mapa do tesouro oasis
-    if (casaAberta && mostrarAvisoMapa && fonteCasa !=NULL)
+    if (casaAberta && mostrarAvisoMapa && fonteCasa != NULL)
     {
         al_draw_filled_rectangle(
             200, 580, 1100, 750,
@@ -152,7 +154,9 @@ void desenhar_casa(void)
         al_draw_text(
             fonteCasa, al_map_rgb(255, 215, 120),
             650, 605, ALLEGRO_ALIGN_CENTER,
-            "MAPA DO TESOURO ENCONTRADO!");
+            encontrouChaveTemploCasa
+                ? "MISSAO DA CASA CONCLUIDA!"
+                : "MAPA DO TESOURO ENCONTRADO!"); // maneira curta de else e if
 
         al_draw_text(
             fonteCasa, al_map_rgb(255, 255, 255),
@@ -225,13 +229,13 @@ void clique_objetos_casa(int mouseX, int mouseY)
 
 void responder_enigma_casa(int tecla)
 {
-    //se a casa estiver aberta
+    // se a casa estiver aberta
     if (!casaAberta)
     {
         return;
     }
 
-    //Fecha a mensagem do mapa com Enter
+    // Fecha a mensagem do mapa com Enter
     if (mostrarAvisoMapa)
     {
         if (tecla == ALLEGRO_KEY_ENTER)
@@ -241,7 +245,7 @@ void responder_enigma_casa(int tecla)
         return;
     }
 
-    //se não estiver no enigma
+    // se não estiver no enigma
     if (!mostrarEnigmaVaso)
     {
         return;
