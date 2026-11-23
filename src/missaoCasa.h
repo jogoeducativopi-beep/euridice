@@ -27,4 +27,7 @@ void liberar_casa(void);
 //recebe a resposta 
 void responder_enigma_casa(int tecla);
 
+//verificar se encontrou o mapa
+bool encontrou_mapa_oasis(void);
+
 #endif

@@ -24,6 +24,12 @@ static bool encontrouChaveTemploCasa = false;
 // 0 = sem resposta, 1 = correta, 2 = incorreta
 static int respostaVaso = 0;
 
+// guarda se o jogador encontrou o mapa do oasis
+static bool mapaOasisEncontrado = false;
+
+// Controla a mensagem do mapa
+static bool mostrarAvisoMapa = false;
+
 // carrega imagem da casa
 bool iniciar_casa(void)
 {
@@ -52,6 +58,7 @@ void fechar_casa(void)
 {
     casaAberta = false;
     mostrarEnigmaVaso = false;
+    mostrarAvisoMapa = false;
 }
 
 bool casa_aberta(void)
@@ -131,6 +138,37 @@ void desenhar_casa(void)
                 "Resposta incorreta! Tente novamente.");
         }
     }
+    // mensagem do mapa do tesouro oasis
+    if (casaAberta && mostrarAvisoMapa && fonteCasa !=NULL)
+    {
+        al_draw_filled_rectangle(
+            200, 580, 1100, 750,
+            al_map_rgb(60, 40, 25));
+
+        al_draw_rectangle(
+            200, 580, 1100, 750,
+            al_map_rgb(230, 185, 85), 3);
+
+        al_draw_text(
+            fonteCasa, al_map_rgb(255, 215, 120),
+            650, 605, ALLEGRO_ALIGN_CENTER,
+            "MAPA DO TESOURO ENCONTRADO!");
+
+        al_draw_text(
+            fonteCasa, al_map_rgb(255, 255, 255),
+            650, 640, ALLEGRO_ALIGN_CENTER,
+            "O papiro revela um tesouro escondido no oasis.");
+
+        al_draw_text(
+            fonteCasa, al_map_rgb(255, 255, 255),
+            650, 665, ALLEGRO_ALIGN_CENTER,
+            "Procure duas colunas antigas perto da agua.");
+
+        al_draw_text(
+            fonteCasa, al_map_rgb(255, 215, 120),
+            650, 710, ALLEGRO_ALIGN_CENTER,
+            "Pressione ENTER para continuar.");
+    }
 }
 
 void liberar_casa(void)
@@ -159,7 +197,11 @@ void clique_objetos_casa(int mouseX, int mouseY)
     {
         return;
     }
-
+    // Impede de clicar em outros objetos enquanto uma mensagem aparece na tela
+    if (mostrarEnigmaVaso || mostrarAvisoMapa)
+    {
+        return;
+    }
     // Verifica se clicou no vaso grande
     if (mouseX >= 230 && mouseX <= 365 &&
         mouseY >= 180 && mouseY <= 330)
@@ -172,25 +214,40 @@ void clique_objetos_casa(int mouseX, int mouseY)
     else if (mouseX >= 800 && mouseX <= 1120 &&
              mouseY >= 310 && mouseY <= 450)
     {
-        printf("Clicou no mapa do tesouro!\n");
-    }
-
-    //Impede clicar nos objetos enquanto o enigma estiver aberto
-    if (mostrarEnigmaVaso)
-    {
-        return;
+        if (!mapaOasisEncontrado)
+        {
+            mapaOasisEncontrado = true;
+            printf("mapa do tesouro encontrado!\n");
+        }
+        mostrarAvisoMapa = true;
     }
 }
 
 void responder_enigma_casa(int tecla)
 {
-    // Verifica se o enigma esta aberto
-    if (!casaAberta || !mostrarEnigmaVaso)
+    //se a casa estiver aberta
+    if (!casaAberta)
     {
         return;
     }
 
-    //Depois de acertar, Enter fecha a pergunta
+    //Fecha a mensagem do mapa com Enter
+    if (mostrarAvisoMapa)
+    {
+        if (tecla == ALLEGRO_KEY_ENTER)
+        {
+            mostrarAvisoMapa = false;
+        }
+        return;
+    }
+
+    //se não estiver no enigma
+    if (!mostrarEnigmaVaso)
+    {
+        return;
+    }
+
+    // Depois de acertar, Enter fecha a pergunta
     if (respostaVaso == 1)
     {
         if (tecla == ALLEGRO_KEY_ENTER)
@@ -200,17 +257,20 @@ void responder_enigma_casa(int tecla)
         return;
     }
 
-    //Resposta correta
+    // Resposta correta
     if (tecla == ALLEGRO_KEY_1)
     {
         respostaVaso = 1;
         encontrouChaveTemploCasa = true;
     }
-    //Respostas incorretas
+    // Respostas incorretas
     else if (tecla == ALLEGRO_KEY_2 ||
              tecla == ALLEGRO_KEY_3)
     {
         respostaVaso = 2;
     }
 }
-
+bool encontrou_mapa_oasis(void)
+{
+    return mapaOasisEncontrado;
+}
