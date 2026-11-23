@@ -14,6 +14,9 @@ void interacao_tecla(int tecla, float jogadorX, float jogadorY);
 //Desenha a mensagem na tela
 void desenhar_interacao(void);
 
+// Verifica se o personagem esta perto de um algum local 
+bool jogador_perto_interacao(float jogadorX, float jogadorY);
+
 //libera a memoria
 void liberar_interacao(void);
 

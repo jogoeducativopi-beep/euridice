@@ -106,6 +106,40 @@ bool interacao_aberta(void)
     return mostrarAvisoCasa || mostrarAvisoMercado || mostrarAvisoLago || mostrarAvisoTemplo;
 }
 
+// Esse comando verifica se o personagem esta perto de um algum local 
+bool jogador_perto_interacao(float jogadorX, float jogadorY)
+{
+    // Casa egipcia
+    if (jogadorX >= 480 && jogadorX <= 660 &&
+        jogadorY >= 1300 && jogadorY <= 1450)
+    {
+        return true;
+    }
+
+    // Mercado egipcio
+    if (jogadorX >= 1580 && jogadorX <= 1980 &&
+        jogadorY >= 760 && jogadorY <= 890)
+    {
+        return true;
+    }
+
+    // Oasis
+    if (jogadorX >= 490 && jogadorX <= 740 &&
+        jogadorY >= 850 && jogadorY <= 955)
+    {
+        return true;
+    }
+
+    // Templo
+    if (jogadorX >= 1080 && jogadorX <= 1235 &&
+        jogadorY >= 350 && jogadorY <= 470)
+    {
+        return true;
+    }
+
+    return false;
+}
+
 void desenhar_interacao(void)
 {
     // Guarda os textos que serao exibidos

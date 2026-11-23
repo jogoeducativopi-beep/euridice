@@ -226,6 +226,9 @@ int main()
     bool redraw = true;
     bool mostrar_colisoes = false;
 
+    // Controla a mensagem das setas
+    bool mostrarInstrucaoSetas = true;
+
     float tempo_carta = 0; // Movimento da carta
 
     bool carta_esta_aberta = false; // Esse comando é da abertura e fechamento da carta
@@ -310,6 +313,15 @@ int main()
 
                 // movimento do personagem
                 personagem_tecla(event.keyboard.keycode, true);
+
+                // Esconde a instrucao quando o jogador apertar uma seta
+                if (event.keyboard.keycode == ALLEGRO_KEY_UP ||
+                    event.keyboard.keycode == ALLEGRO_KEY_DOWN ||
+                    event.keyboard.keycode == ALLEGRO_KEY_LEFT ||
+                    event.keyboard.keycode == ALLEGRO_KEY_RIGHT)
+                {
+                    mostrarInstrucaoSetas = false;
+                }
 
                 // Verifica se o jogador quer interagir com algum local
                 interacao_tecla(
@@ -544,14 +556,12 @@ int main()
                                      650, 410, ALLEGRO_ALIGN_CENTER,
                                      "Sua aventura começa agora!");
 
-            
-                     al_draw_text(
-                                fonte_carta,
-                                al_map_rgb(0, 0, 0),
-                                650, 480,
-                                ALLEGRO_ALIGN_CENTER,
-                                "Pressione ESPACO para iniciar");
-                        
+                        al_draw_text(
+                            fonte_carta,
+                            al_map_rgb(0, 0, 0),
+                            650, 480,
+                            ALLEGRO_ALIGN_CENTER,
+                            "Pressione ESPAÇO para iniciar");
                     }
                 }
             }
@@ -563,6 +573,24 @@ int main()
                 desenhar_mapa(
                     posicaoCameraX(),
                     posicaoCameraY());
+
+                // Instrucao de movimentacao do personagem
+
+                if (fonte_carta && mostrarInstrucaoSetas) // mostra ate aperta na seta
+                {
+                    // Fundo da mensagem
+                    al_draw_filled_rectangle(
+                        390, 740, 910, 785,
+                        al_map_rgba(60, 40, 25, 220));
+
+                    // Texto da mensagem
+                    al_draw_text(
+                        fonte_carta,
+                        al_map_rgb(255, 215, 120),
+                        650, 745,
+                        ALLEGRO_ALIGN_CENTER,
+                        "Use as SETAS para se movimentar");
+                }
 
                 // Mostra as colisoes dos objetos
                 if (mostrar_colisoes)
@@ -576,6 +604,24 @@ int main()
                 desenha_personagem(
                     posicaoCameraX(),
                     posicaoCameraY());
+
+                // Mostra a tecla E quando o personagem esta perto de um local
+                if (jogador_perto_interacao(
+                        personagem_centro_x(),
+                        personagem_centro_y()) &&
+                    !interacao_aberta())
+                {
+                    al_draw_filled_rectangle(
+                        530, 30, 770, 75,
+                        al_map_rgba(60, 40, 25, 220));
+
+                    al_draw_text(
+                        fonte_carta,
+                        al_map_rgb(255, 215, 120),
+                        650, 38,
+                        ALLEGRO_ALIGN_CENTER,
+                        "[E] Interagir");
+                }
 
                 // Mostra a hitbox dos pes
                 if (mostrar_colisoes)
