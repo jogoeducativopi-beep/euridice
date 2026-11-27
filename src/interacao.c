@@ -5,6 +5,7 @@
 #include "missaoMercado.h"
 #include "missaoCasa.h"
 #include "missaoRuinas.h"
+#include "templo.h"
 
 // ponteiro que guarda a referencia da fonte utilizada para escrever
 static ALLEGRO_FONT *fonteAviso = NULL;
@@ -125,7 +126,6 @@ void interacao_tecla(int tecla, float jogadorX, float jogadorY)
             {
                 mostrarAvisoMercado = true;
             }
-            // Personagem proximo do lago
             
             // Personagem proximo do oasis
             else if (jogadorX >= 490 && jogadorX <= 740 &&
@@ -145,6 +145,7 @@ void interacao_tecla(int tecla, float jogadorX, float jogadorY)
                      jogadorY >= 350 && jogadorY <= 470)
             {
                 mostrarAvisoTemplo = true;
+                verificar_chaves_templo();
             }
         }
     }
