@@ -242,8 +242,16 @@ void desenhar_interacao(void)
     else if (mostrarAvisoTemplo)
     {
         titulo = "Templo Egipcio";
+        if (templo_destrancado())
+        {
+         mensagem1 = "As tres chaves foram encontradas!";
+        mensagem2 = "Porta destrancada! Pressione ENTER para entrar."; 
+        }
+        else{
+        
         mensagem1 = "A porta esta trancada conclua as missoes";
         mensagem2 = "Explore o mapa";
+        }
     }
     else
     {
