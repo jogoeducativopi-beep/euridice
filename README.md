@@ -28,13 +28,13 @@
 
 **Eurídice** é um jogo educativo de aventura e exploração histórica, desenvolvido por estudantes de Ciência da Computação do Centro Universitário Senac.
 
-Ambientado no Egito Antigo, o jogo propõe uma forma diferente de aprender história, em que o jogador explora cenários, resolve enigmas, encontra pistas e descobre curiosidades sobre a civilização egípcia.
+Ambientado no Egito, o jogo propõe uma forma diferente de aprender história, em que o jogador explora cenários, resolve enigmas, encontra pistas e descobre curiosidades sobre a civilização egípcia.
 
 ---
 
 ## Gameplay
 
-Confira um pouco da jornada pelo Egito Antigo.
+Confira um pouco da jornada pelo Egito.
 
 <!-- Adicionar o vídeo do jogo aqui -->
 
@@ -163,7 +163,7 @@ pacman -S --needed mingw-w64-ucrt-x86_64-toolchain mingw-w64-ucrt-x86_64-allegro
 
 - Abra a pasta do projeto no Visual Studio Code.
 - Pressione `F5` para compilar e executar o jogo.
-- Aproveite sua jornada pelo Egito Antigo!
+- Aproveite sua jornada pelo Egito!
 
 ---
 
@@ -178,7 +178,7 @@ pacman -S --needed mingw-w64-ucrt-x86_64-toolchain mingw-w64-ucrt-x86_64-allegro
         <img src="https://wsrv.nl/?url=github.com/Tinasenac.png&w=200&h=200&fit=cover&mask=circle&output=png" width="110">
       </a>
       <br>
-      <b>Anna Cristina</b>
+      <b>Anna Cristina Nogueira</b>
       <br><br>
       <a href="https://github.com/Tinasenac">
         <img src="https://img.shields.io/badge/GitHub-30251B?style=flat&logo=github&logoColor=white">
