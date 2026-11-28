@@ -36,7 +36,9 @@ Ambientado no Egito, o jogo propõe uma forma diferente de aprender história, e
 
 Confira um pouco da jornada pelo Egito.
 
-<!-- Adicionar o vídeo do jogo aqui -->
+https://github.com/user-attachments/assets/664133e5-2a07-455d-b22b-d8c68bf36335
+
+
 
 
 ---
