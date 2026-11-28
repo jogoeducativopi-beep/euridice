@@ -35,4 +35,7 @@ void mover_peca_mercado(int mouseX, int mouseY);
 //Verifica se a peça foi encaixada corretamente
 void soltar_peca_mercado(int mouseX, int mouseY);
 
+//resetar
+void resetar_mercado(void);
+
 #endif

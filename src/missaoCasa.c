@@ -283,3 +283,15 @@ bool encontrou_chave_templo_casa(void)
 {
     return encontrouChaveTemploCasa;
 }
+
+void resetar_casa(void)
+{
+    casaAberta = false;
+    mostrarEnigmaVaso = false;
+
+    encontrouChaveTemploCasa = false;
+    respostaVaso = 0;
+
+    mapaOasisEncontrado = false;
+    mostrarAvisoMapa = false;
+}

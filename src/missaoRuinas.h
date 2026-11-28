@@ -26,5 +26,7 @@ bool encontrou_terceira_chave(void);
 
 // Libera os recursos
 void liberar_missao_ruinas(void);
+//resetar
+void resetar_missao_ruinas(void);
 
 #endif

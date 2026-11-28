@@ -25,4 +25,7 @@ bool encontrou_chave_oasis(void);
 
 bool tentar_entrar_templo(int tecla);
 
+//resetar
+void resetar_interacao(void);
+
 #endif

@@ -32,4 +32,7 @@ bool encontrou_mapa_oasis(void);
 
 bool encontrou_chave_templo_casa(void);
 
+//ressetar
+void resetar_casa(void);
+
 #endif

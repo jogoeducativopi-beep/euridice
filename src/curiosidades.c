@@ -222,3 +222,18 @@ void liberar_curiosidades(void)
         fonteReserva = NULL;
     }
 }
+
+void resetar_curiosidades(void)
+{
+    indiceAberto = -1;
+    fechando = false;
+
+    opacidadePainel = 0.0f;
+    opacidadeAviso = 0.0f;
+    tempoPulso = 0.0f;
+
+    for (int i = 0; i < TOTAL_DESCOBERTAS; i++)
+    {
+        descobertas[i].descoberta = false;
+    }
+}

@@ -25,4 +25,7 @@ void atualizar_posicao_personagem(int largura_mapa, int altura_mapa);
 //desenha a colisão do perssonagem
 void desenhar_colisao_personagem(float cameraX, float cameraY);
 
+//resetar
+void resetar_personagem(void);
+
 #endif // encerra compilação condicional do ifndef

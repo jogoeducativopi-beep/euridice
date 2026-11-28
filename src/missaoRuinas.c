@@ -292,3 +292,10 @@ void liberar_missao_ruinas(void)
         fonteRuinas = NULL;
     }
 }
+
+void resetar_missao_ruinas(void)
+{
+    ruinasAberta = false;
+    terceiraChaveEncontrada = false;
+    respostaErrada = false;
+}

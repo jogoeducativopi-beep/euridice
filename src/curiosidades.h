@@ -23,4 +23,7 @@ bool curiosidades_aberta(void);
 // Libera imagens e fonte de reserva.
 void liberar_curiosidades(void);
 
+//resetar
+void resetar_curiosidades(void);
+
 #endif

@@ -83,8 +83,7 @@ void interacao_tecla(int tecla, float jogadorX, float jogadorY)
         mostrarAvisoTemplo = false;
 
         printf("Entrando no templo!\n");
-
-        reproduzir_video_esfinge();
+   iniciar_templo();
         return;
     }
 
@@ -354,4 +353,14 @@ bool tentar_entrar_templo(int tecla)
     }
 
     return false;
+}
+
+void resetar_interacao(void)
+{
+    mostrarAvisoCasa = false;
+    mostrarAvisoMercado = false;
+    mostrarAvisoLago = false;
+    mostrarAvisoTemplo = false;
+
+    chaveOasisEncontrada = false;
 }

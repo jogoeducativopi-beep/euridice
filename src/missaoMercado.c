@@ -451,3 +451,24 @@ void soltar_peca_mercado(int mouseX, int mouseY)
 bool encontrou_chave_casa(void){
     return casaDestrancada;
 }
+void resetar_mercado(void)
+{
+    mercadoAberto = false;
+
+    encontrouPecaVaso = false;
+    encontrouPecaPapiro = false;
+    encontrouPecaTinteiro = false;
+    encontrouPecaCaixote = false;
+
+    casaDestrancada = false;
+    mostrarAvisoDestrancada = false;
+
+    for (int i = 0; i < TOTAL_PECAS; i++)
+    {
+        pecaEncaixada[i] = false;
+    }
+
+    pecaArrastada = -1;
+    mouseArrasteX = 0;
+    mouseArrasteY = 0;
+}

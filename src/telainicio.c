@@ -1,5 +1,4 @@
 #include <allegro5/allegro.h>
-#include <allegro5/allegro_video.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
@@ -159,11 +158,6 @@ int main()
     if (!al_init_image_addon())
     {
         fprintf(stderr, "Falha ao inicializar o addon de imagem.\n");
-        return -1;
-    }
-    if (!al_init_video_addon())
-    {
-        printf("Erro ao inicializar Allegro Video!\n");
         return -1;
     }
 
@@ -368,20 +362,20 @@ int main()
         {
             redraw = true;
 
-        if (estado_atual == ESTADO_MAPA)
-        {
-            float px = personagem_centro_x();
-            float py = personagem_centro_y();
+            if (estado_atual == ESTADO_MAPA)
+            {
+                float px = personagem_centro_x();
+                float py = personagem_centro_y();
 
-            bool livre =
-                !interacao_aberta() &&
-                !mercado_aberto() &&
-                !casa_aberta() &&
-                !missao_ruinas_aberta() &&
-                !jogador_perto_interacao(px, py);
+                bool livre =
+                    !interacao_aberta() &&
+                    !mercado_aberto() &&
+                    !casa_aberta() &&
+                    !missao_ruinas_aberta() &&
+                    !jogador_perto_interacao(px, py);
 
-            atualizar_curiosidades(px, py, livre);
-        }
+                atualizar_curiosidades(px, py, livre);
+            }
 
             // Atualiza a animacao do aviso de interacao
             if (estado_atual == ESTADO_MAPA)
@@ -435,8 +429,7 @@ int main()
             }
 
             // Atualizar movimento no mapa
-            if (estado_atual == ESTADO_MAPA && !mercado_aberto() && !interacao_aberta() && !casa_aberta() &&
-                !video_esfinge_ativo() && !curiosidades_aberta())
+            if (estado_atual == ESTADO_MAPA && !mercado_aberto() && !interacao_aberta() && !casa_aberta() && !curiosidades_aberta() && !templo_ativo())
             {
                 // Movimenta a personagem dentro do mundo
                 atualizar_posicao_personagem(LARGURA_MUNDO, ALTURA_MUNDO);
@@ -457,12 +450,45 @@ int main()
 
         else if (event.type == ALLEGRO_EVENT_KEY_DOWN)
         {
-            // Ignora comandos enquanto o video esta sendo exibido
-            if (video_esfinge_ativo())
+            // Controla a pergunta da Esfinge e o final
+            if (templo_ativo())
             {
+                if (templo_finalizado() &&
+                    event.keyboard.keycode == ALLEGRO_KEY_SPACE)
+                {
+                    // Reinicia todas as missoes
+                    resetar_mercado();
+                    resetar_casa();
+                    resetar_missao_ruinas();
+                    resetar_interacao();
+                    resetar_personagem();
+                    resetar_curiosidades();
+
+                    // Fecha as imagens do templo
+                    fechar_templo();
+
+                    // Volta ao menu principal
+                    estado_atual = ESTADO_MENU;
+
+                    // Reinicia a abertura
+                    carta_esta_aberta = false;
+                    tempo_carta = 0;
+                    tempoInstrucaoSetas = 300;
+                    tempoPulsoInteracao = 0;
+                    opacidadeInteracao = 0;
+                    mostrar_colisoes = false;
+
+                    redraw = true;
+                }
+                else
+                {
+                    // Na pergunta, recebe 1, 2 ou 3
+                    responder_enigma_esfinge(
+                        event.keyboard.keycode);
+                }
+
                 continue;
             }
-
             // Interacao com as descobertas historicas
             if (estado_atual == ESTADO_MAPA)
             {
@@ -477,7 +503,7 @@ int main()
                     !jogador_perto_interacao(px, py);
 
                 if (curiosidades_tecla(
-                    event.keyboard.keycode, px, py, livre))
+                        event.keyboard.keycode, px, py, livre))
                 {
                     continue;
                 }
@@ -527,7 +553,7 @@ int main()
             }
 
             // Registra a tecla pressionada no mapa
-            
+
             // Registra a tecla pressionada no mapa
             if (estado_atual == ESTADO_MAPA)
             {
@@ -650,10 +676,10 @@ int main()
         {
             redraw = false;
 
-            // Se o video estiver ativo, desenha o video
-            if (video_esfinge_ativo())
+            // Desenha a pergunta da Esfinge ou o final no museu
+            if (templo_ativo())
             {
-                desenhar_video_esfinge();
+                desenhar_templo();
             }
 
             else if (estado_atual == ESTADO_MENU)
@@ -919,20 +945,20 @@ int main()
                 {
                     desenhar_contador_chaves(fonte_carta);
                 }
-            // NOVO: Descobertas ilustradas
-            {
-                float px = personagem_centro_x();
-                float py = personagem_centro_y();
+                // NOVO: Descobertas ilustradas
+                {
+                    float px = personagem_centro_x();
+                    float py = personagem_centro_y();
 
-                bool livre =
-                    !interacao_aberta() &&
-                    !mercado_aberto() &&
-                    !casa_aberta() &&
-                    !missao_ruinas_aberta() &&
-                    !jogador_perto_interacao(px, py);
+                    bool livre =
+                        !interacao_aberta() &&
+                        !mercado_aberto() &&
+                        !casa_aberta() &&
+                        !missao_ruinas_aberta() &&
+                        !jogador_perto_interacao(px, py);
 
-                desenhar_curiosidades(fonte_carta, livre);
-            }
+                    desenhar_curiosidades(fonte_carta, livre);
+                }
             }
 
             al_flip_display(); // esse comando atualiza a imagem
@@ -944,6 +970,8 @@ int main()
     {
         al_destroy_bitmap(fundo);
     }
+    // Libera as imagens da Esfinge e do museu
+    fechar_templo();
     al_destroy_event_queue(event_queue);
     al_destroy_timer(timer);
     liberar_mapa();

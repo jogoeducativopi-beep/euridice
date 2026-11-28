@@ -297,3 +297,25 @@ void desenhar_colisao_personagem(float cameraX, float cameraY)
         2
     );
 }
+
+void resetar_personagem(void)
+{
+    // Posicao inicial no mapa
+    x = 1090;
+    y = 1390;
+
+    // Reinicia a animacao
+    direcaoAnimacao = 0;
+    quadroAnimacao = 0;
+    contadorAnimacao = 0;
+    estaAndando = false;
+
+    // Personagem olhando para frente
+    imagemAtual = frente;
+
+    // Nenhuma tecla pressionada
+    for (int i = 0; i < ALLEGRO_KEY_MAX; i++)
+    {
+        teclas[i] = false;
+    }
+}

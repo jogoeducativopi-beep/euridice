@@ -1,29 +1,26 @@
 #include <stdio.h>
-#include <allegro5/allegro_video.h>
-#include <allegro5/allegro_audio.h>
+#include <stdbool.h>
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_image.h>
 #include "templo.h"
 #include "missaoCasa.h"
 #include "interacao.h"
 #include "missaoRuinas.h"
 
-// Ponteiro que guarda o video
-static ALLEGRO_VIDEO *videoEsfinge = NULL;
+// Etapas:
+// 0 = Templo fechado
+// 1 = Pergunta da Esfinge
+// 2 = Imagem final do museu
 
-// Guarda quando o video foi iniciado
-static double inicioVideo = 0;
+static int etapaTemplo = 0;
 
-// Verifica se a reproducao ja comecou
-static bool videoJaComecou = false;
+// Imagens da ultima fase
+static ALLEGRO_BITMAP *imagemPergunta = NULL;
+static ALLEGRO_BITMAP *imagemMuseu = NULL;
 
-bool video_esfinge_ativo(void)
-{
-    return videoEsfinge != NULL;
-}
-
-
+// Verifica se encontrou as tres chaves
 void verificar_chaves_templo(void)
 {
-    // Verifica se o jogador possui as tres chaves
     if (encontrou_chave_templo_casa() &&
         encontrou_chave_oasis() &&
         encontrou_terceira_chave())
@@ -36,7 +33,8 @@ void verificar_chaves_templo(void)
         printf("Ainda faltam chaves para abrir o templo.\n");
     }
 }
-// guarda true ou false se as 3 chaves foram encontradas
+
+// Retorna verdadeiro quando tem as tres chaves
 bool templo_destrancado(void)
 {
     return encontrou_chave_templo_casa() &&
@@ -44,87 +42,119 @@ bool templo_destrancado(void)
            encontrou_terceira_chave();
 }
 
-// Verifica se existe um video aberto
-// Abre e inicia o video da Esfinge
-void reproduzir_video_esfinge(void)
+// Abre a pergunta quando o jogador entra
+void iniciar_templo(void)
 {
-    // Evita iniciar o mesmo video duas vezes
-    if (videoEsfinge != NULL)
+    if (etapaTemplo != 0)
     {
         return;
     }
 
-    // Carrega o arquivo OGV
-    videoEsfinge = al_open_video(
-        "assets/videos/euridice_abertura_esfinge.ogv");
-
-    if (videoEsfinge == NULL)
+    if (!templo_destrancado())
     {
-        printf("Erro ao carregar video da Esfinge!\n");
         return;
     }
 
-    // Recupera o mixer de audio do jogo
-    ALLEGRO_MIXER *mixer = al_get_default_mixer();
+    // Carrega as duas imagens
+    imagemPergunta = al_load_bitmap(
+        "assets/imagens/esfinge_enigma.png");
 
-    if (mixer == NULL)
+    imagemMuseu = al_load_bitmap(
+        "assets/imagens/euridice_museu.png");
+
+    if (imagemPergunta == NULL || imagemMuseu == NULL)
     {
-        printf("Mixer de audio indisponivel!\n");
+        printf("Erro ao carregar as imagens do templo!\n");
 
-        al_close_video(videoEsfinge);
-        videoEsfinge = NULL;
+        fechar_templo();
         return;
     }
 
-    // Para os sons anteriores
-    al_stop_samples();
+    // Comeca mostrando a pergunta
+    etapaTemplo = 1;
 
-    inicioVideo = al_get_time();
-    videoJaComecou = false;
-
-    // Inicia o video com audio
-    al_start_video(videoEsfinge, mixer);
+    printf("Enigma da Esfinge iniciado!\n");
+    printf("Escolha 1, 2 ou 3.\n");
 }
 
-// Desenha o video na janela do jogo
-void desenhar_video_esfinge(void)
+// Indica se o jogador esta na fase final
+bool templo_ativo(void)
 {
-    if (videoEsfinge == NULL)
+    return etapaTemplo != 0;
+}
+
+// Indica se chegou a imagem do museu
+bool templo_finalizado(void)
+{
+    return etapaTemplo == 2;
+}
+
+// Recebe as respostas pelo teclado
+void responder_enigma_esfinge(int tecla)
+{
+    // A pergunta precisa estar aberta
+    if (etapaTemplo != 1)
     {
         return;
     }
 
-    bool tocando = al_is_video_playing(videoEsfinge);
-
-    if (tocando)
+    if (tecla == ALLEGRO_KEY_2)
     {
-        videoJaComecou = true;
+        // Resposta correta: ser humano
+        printf("Resposta correta! Ser humano!\n");
+
+        etapaTemplo = 2;
+    }
+    else if (tecla == ALLEGRO_KEY_1 ||
+             tecla == ALLEGRO_KEY_3)
+    {
+        // Continua mostrando a pergunta
+        printf("Resposta incorreta! Tente novamente.\n");
+    }
+}
+
+// Desenha a imagem da etapa atual
+void desenhar_templo(void)
+{
+    ALLEGRO_BITMAP *imagemAtual = NULL;
+
+    if (etapaTemplo == 1)
+    {
+        imagemAtual = imagemPergunta;
+    }
+    else if (etapaTemplo == 2)
+    {
+        imagemAtual = imagemMuseu;
     }
 
-    // Fecha quando terminar ou ultrapassar o tempo limite
-    if ((videoJaComecou && !tocando) ||
-        (al_get_time() - inicioVideo > 30.0))
+    if (imagemAtual == NULL)
     {
-        al_close_video(videoEsfinge);
-        videoEsfinge = NULL;
         return;
     }
 
-    // Limpa a tela
-    al_clear_to_color(al_map_rgb(0, 0, 0));
-
-    // Recupera o quadro atual
-    ALLEGRO_BITMAP *quadro = al_get_video_frame(videoEsfinge);
-
-    if (quadro != NULL)
+    al_draw_scaled_bitmap(
+        imagemAtual,
+        0, 0,
+        al_get_bitmap_width(imagemAtual),
+        al_get_bitmap_height(imagemAtual),
+        0, 0,
+        1300, 800,
+        0);
+}
+// Libera as imagens e fecha a fase
+void fechar_templo(void)
+{
+    if (imagemPergunta != NULL)
     {
-        al_draw_scaled_bitmap(
-            quadro,
-            0, 0,
-            al_get_bitmap_width(quadro),
-            al_get_bitmap_height(quadro),
-            0, 0,
-            1300, 800,
-            0);
+        al_destroy_bitmap(imagemPergunta);
+        imagemPergunta = NULL;
     }
+
+    if (imagemMuseu != NULL)
+    {
+        al_destroy_bitmap(imagemMuseu);
+        imagemMuseu = NULL;
+    }
+
+    etapaTemplo = 0;
 }
