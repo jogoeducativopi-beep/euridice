@@ -1,4 +1,5 @@
 #include <allegro5/allegro.h>
+#include <allegro5/allegro_video.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
@@ -16,6 +17,7 @@
 #include "missaoMercado.h"
 #include "missaoCasa.h"
 #include "missaoRuinas.h"
+#include "templo.h"
 
 #define LARGURA_TELA 1300
 #define ALTURA_TELA 800
@@ -59,8 +61,7 @@ void desenhar_contador_chaves(ALLEGRO_FONT *fonte)
         x, y,
         x + largura, y + altura,
         12, 12,
-        al_map_rgba(50, 35, 25, 230)
-    );
+        al_map_rgba(50, 35, 25, 230));
 
     // Borda dourada
     al_draw_rounded_rectangle(
@@ -68,8 +69,7 @@ void desenhar_contador_chaves(ALLEGRO_FONT *fonte)
         x + largura, y + altura,
         12, 12,
         al_map_rgb(230, 185, 85),
-        2
-    );
+        2);
 
     // Titulo
     al_draw_text(
@@ -77,8 +77,7 @@ void desenhar_contador_chaves(ALLEGRO_FONT *fonte)
         al_map_rgb(255, 215, 120),
         x + largura / 2, y + 12,
         ALLEGRO_ALIGN_CENTER,
-        "CHAVES DO TEMPLO"
-    );
+        "CHAVES DO TEMPLO");
 
     // Textos que mudam automaticamente
     char textoChaves[20];
@@ -93,8 +92,7 @@ void desenhar_contador_chaves(ALLEGRO_FONT *fonte)
         al_map_rgb(255, 255, 255),
         x + 20, y + 53,
         0,
-        textoChaves
-    );
+        textoChaves);
 
     // Porcentagem
     al_draw_text(
@@ -102,15 +100,13 @@ void desenhar_contador_chaves(ALLEGRO_FONT *fonte)
         al_map_rgb(255, 215, 120),
         x + largura - 20, y + 53,
         ALLEGRO_ALIGN_RIGHT,
-        textoPorcentagem
-    );
+        textoPorcentagem);
 
     // Fundo da barra de progresso
     al_draw_filled_rectangle(
         x + 20, y + 100,
         x + largura - 20, y + 115,
-        al_map_rgb(100, 80, 55)
-    );
+        al_map_rgb(100, 80, 55));
 
     // Parte preenchida da barra
     float larguraBarra = (largura - 40) *
@@ -121,11 +117,9 @@ void desenhar_contador_chaves(ALLEGRO_FONT *fonte)
         al_draw_filled_rectangle(
             x + 20, y + 100,
             x + 20 + larguraBarra, y + 115,
-            al_map_rgb(230, 185, 85)
-        );
+            al_map_rgb(230, 185, 85));
     }
 }
-
 
 int main()
 {
@@ -164,6 +158,11 @@ int main()
     if (!al_init_image_addon())
     {
         fprintf(stderr, "Falha ao inicializar o addon de imagem.\n");
+        return -1;
+    }
+    if (!al_init_video_addon())
+    {
+        printf("Erro ao inicializar Allegro Video!\n");
         return -1;
     }
 
@@ -371,14 +370,13 @@ int main()
                 // Verifica se pode mostrar o aviso
                 bool perto = jogador_perto_interacao(
                     personagem_centro_x(),
-                    personagem_centro_y()
-                );
+                    personagem_centro_y());
 
                 bool podeMostrar = perto &&
-                    !interacao_aberta() &&
-                    !mercado_aberto() &&
-                    !casa_aberta() &&
-                    !missao_ruinas_aberta();
+                                   !interacao_aberta() &&
+                                   !mercado_aberto() &&
+                                   !casa_aberta() &&
+                                   !missao_ruinas_aberta();
 
                 if (podeMostrar)
                 {
@@ -398,7 +396,6 @@ int main()
                 }
             }
 
-
             // Atualiza o tempo do tutorial de movimentacao
             if (estado_atual == ESTADO_MAPA &&
                 tempoInstrucaoSetas > 0 &&
@@ -410,7 +407,6 @@ int main()
                 tempoInstrucaoSetas--;
             }
 
-
             // Atualiza o movimento da carta
             if (estado_atual == ESTADO_JOGO)
             {
@@ -418,7 +414,8 @@ int main()
             }
 
             // Atualizar movimento no mapa
-            if (estado_atual == ESTADO_MAPA && !mercado_aberto() && !interacao_aberta() && !casa_aberta())
+            if (estado_atual == ESTADO_MAPA && !mercado_aberto() && !interacao_aberta() && !casa_aberta() &&
+                !video_esfinge_ativo())
             {
                 // Movimenta a personagem dentro do mundo
                 atualizar_posicao_personagem(LARGURA_MUNDO, ALTURA_MUNDO);
@@ -438,10 +435,16 @@ int main()
         }
 
         else if (event.type == ALLEGRO_EVENT_KEY_DOWN)
-        { // fecha o jogo ao pressionar esc
+        {
+            // Ignora comandos enquanto o video esta sendo exibido
+            if (video_esfinge_ativo())
+            {
+                continue;
+            }
+            // fecha o jogo ao pressionar esc
             if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
             {
-                if(missao_ruinas_aberta())
+                if (missao_ruinas_aberta())
                 {
                     fechar_missao_ruinas();
                 }
@@ -502,7 +505,7 @@ int main()
             if (estado_atual == ESTADO_MAPA)
             {
                 personagem_tecla(event.keyboard.keycode, false);
-                //verifica a resposta do enigma
+                // verifica a resposta do enigma
                 responder_enigma_casa(event.keyboard.keycode);
             }
         }
@@ -527,7 +530,7 @@ int main()
 
                 if (estado_atual == ESTADO_MAPA && casa_aberta())
                 {
-                    //Clique nos objetos do interior da casa
+                    // Clique nos objetos do interior da casa
                     clique_objetos_casa(mx, my);
                 }
 
@@ -606,7 +609,13 @@ int main()
         {
             redraw = false;
 
-            if (estado_atual == ESTADO_MENU)
+            // Se o video estiver ativo, desenha o video
+            if (video_esfinge_ativo())
+            {
+                desenhar_video_esfinge();
+            }
+
+            else if (estado_atual == ESTADO_MENU)
             {
                 // Tela inicial
                 if (fundo)
@@ -747,50 +756,46 @@ int main()
                     posicaoCameraX(),
                     posicaoCameraY());
 
-            // Instrucao de movimentacao do personagem   
-            // Animação do tut
-            if (fonte_carta != NULL &&
-                tempoInstrucaoSetas > 0 &&
-                !interacao_aberta() &&
-                !mercado_aberto() &&
-                !casa_aberta() &&
-                !missao_ruinas_aberta())
-            {
-                int transparenciaTexto = 255;
-                int transparenciaFundo = 220;
-
-                // No ultimo segundo, desaparece suavemente
-                if (tempoInstrucaoSetas <= 60)
+                // Instrucao de movimentacao do personagem
+                // Animação do tut
+                if (fonte_carta != NULL &&
+                    tempoInstrucaoSetas > 0 &&
+                    !interacao_aberta() &&
+                    !mercado_aberto() &&
+                    !casa_aberta() &&
+                    !missao_ruinas_aberta())
                 {
-                    transparenciaTexto =
-                        tempoInstrucaoSetas * 255 / 60;
+                    int transparenciaTexto = 255;
+                    int transparenciaFundo = 220;
 
-                    transparenciaFundo =
-                        tempoInstrucaoSetas * 220 / 60;
+                    // No ultimo segundo, desaparece suavemente
+                    if (tempoInstrucaoSetas <= 60)
+                    {
+                        transparenciaTexto =
+                            tempoInstrucaoSetas * 255 / 60;
+
+                        transparenciaFundo =
+                            tempoInstrucaoSetas * 220 / 60;
+                    }
+
+                    // Fundo marrom transparente
+                    al_draw_filled_rectangle(
+                        390, 740, 910, 785,
+                        al_map_rgba(
+                            60, 40, 25,
+                            transparenciaFundo));
+
+                    // Texto dourado
+                    al_draw_text(
+                        fonte_carta,
+                        al_map_rgba(
+                            255, 215, 120,
+                            transparenciaTexto),
+                        650, 745,
+                        ALLEGRO_ALIGN_CENTER,
+                        "Use SETAS ou WASD para se movimentar");
                 }
 
-                // Fundo marrom transparente
-                al_draw_filled_rectangle(
-                    390, 740, 910, 785,
-                    al_map_rgba(
-                        60, 40, 25,
-                        transparenciaFundo
-                    )
-                );
-
-                // Texto dourado
-                al_draw_text(
-                    fonte_carta,
-                    al_map_rgba(
-                        255, 215, 120,
-                        transparenciaTexto
-                    ),
-                    650, 745,
-                    ALLEGRO_ALIGN_CENTER,
-                    "Use SETAS ou WASD para se movimentar"
-                );
-            }
-    
                 // Mostra as colisoes dos objetos
                 if (mostrar_colisoes)
                 {
@@ -805,8 +810,8 @@ int main()
                     posicaoCameraY());
 
                 // Mostra a tecla E quando o personagem esta perto de um local
-                
-                // Animação aparecendo suavemente 
+
+                // Animação aparecendo suavemente
                 if (fonte_carta != NULL &&
                     opacidadeInteracao > 0.0f &&
                     !interacao_aberta() &&
@@ -830,16 +835,14 @@ int main()
                     al_draw_filled_rounded_rectangle(
                         530, 30, 770, 75,
                         10, 10,
-                        al_map_rgba(60, 40, 25, alphaFundo)
-                    );
+                        al_map_rgba(60, 40, 25, alphaFundo));
 
                     // Borda dourada pulsante
                     al_draw_rounded_rectangle(
                         530, 30, 770, 75,
                         10, 10,
                         al_map_rgba(255, 215, 120, alphaBorda),
-                        2.5f
-                    );
+                        2.5f);
 
                     // Texto do aviso
                     al_draw_text(
@@ -847,10 +850,8 @@ int main()
                         al_map_rgba(255, 215, 120, alphaTexto),
                         650, 38,
                         ALLEGRO_ALIGN_CENTER,
-                        "[E] Interagir"
-                    );
+                        "[E] Interagir");
                 }
-
 
                 // Mostra a hitbox dos pes
                 if (mostrar_colisoes)
@@ -867,7 +868,7 @@ int main()
                 desenhar_casa();
                 // Mostra a missao das ruinas sobre o mapa
                 desenhar_missao_ruinas();
-                   
+
                 // Contador de chaves do templo
                 if (fonte_carta != NULL &&
                     !mercado_aberto() &&

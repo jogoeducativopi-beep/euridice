@@ -1,6 +1,7 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h> //permite escrever mensagem na tela
 #include <allegro5/allegro_primitives.h>
+#include <stdio.h>
 #include "interacao.h"
 #include "missaoMercado.h"
 #include "missaoCasa.h"
@@ -47,7 +48,6 @@ void interacao_tecla(int tecla, float jogadorX, float jogadorY)
         return;
     }
 
-     
     // Se o enigma estiver aberto, recebe as respostas
     if (missao_ruinas_aberta())
     {
@@ -65,8 +65,6 @@ void interacao_tecla(int tecla, float jogadorX, float jogadorY)
         return;
     }
 
-
-
     // Enter abre a casa somente se estiver destrancada
     if (tecla == ALLEGRO_KEY_ENTER &&
         mostrarAvisoCasa &&
@@ -76,6 +74,20 @@ void interacao_tecla(int tecla, float jogadorX, float jogadorY)
         abrir_casa();
         return;
     }
+
+    // Enter inicia a cena da Esfinge se tiver as tres chaves
+    if (tecla == ALLEGRO_KEY_ENTER &&
+        mostrarAvisoTemplo &&
+        templo_destrancado())
+    {
+        mostrarAvisoTemplo = false;
+
+        printf("Entrando no templo!\n");
+
+        reproduzir_video_esfinge();
+        return;
+    }
+
     // se a mensagem estiver aberta o enter entra no mercado
     if (tecla == ALLEGRO_KEY_ENTER && mostrarAvisoMercado)
     {
@@ -126,7 +138,7 @@ void interacao_tecla(int tecla, float jogadorX, float jogadorY)
             {
                 mostrarAvisoMercado = true;
             }
-            
+
             // Personagem proximo do oasis
             else if (jogadorX >= 490 && jogadorX <= 740 &&
                      jogadorY >= 850 && jogadorY <= 955)
@@ -244,13 +256,14 @@ void desenhar_interacao(void)
         titulo = "Templo Egipcio";
         if (templo_destrancado())
         {
-         mensagem1 = "As tres chaves foram encontradas!";
-        mensagem2 = "Porta destrancada! Pressione ENTER para entrar."; 
+            mensagem1 = "As tres chaves foram encontradas!";
+            mensagem2 = "Porta destrancada! Pressione ENTER para entrar.";
         }
-        else{
-        
-        mensagem1 = "A porta esta trancada conclua as missoes";
-        mensagem2 = "Explore o mapa";
+        else
+        {
+
+            mensagem1 = "A porta esta trancada conclua as missoes";
+            mensagem2 = "Explore o mapa";
         }
     }
     else
@@ -302,8 +315,7 @@ void desenhar_interacao(void)
             al_map_rgb(255, 215, 120),
             650, 700,
             ALLEGRO_ALIGN_CENTER,
-            "Na chave, ha o desenho de um antigo arco de pedra..."
-        );
+            "Na chave, ha o desenho de um antigo arco de pedra...");
     }
 
     // Instrucao para fechar
