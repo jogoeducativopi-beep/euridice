@@ -6,7 +6,7 @@
             "name": "Depurar jogo (euridice)",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/jogo.exe",
+            "program": "${workspaceFolder}/telainicio.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

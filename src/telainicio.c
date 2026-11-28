@@ -527,23 +527,19 @@ int main()
             }
 
             // Registra a tecla pressionada no mapa
+            
+            // Registra a tecla pressionada no mapa
             if (estado_atual == ESTADO_MAPA)
             {
-                if (tentar_entrar_templo(event.keyboard.keycode))
-                {
-                    estado_atual = ESTADO_JOGO;
-                }
-                else
-                {
-                    personagem_tecla(event.keyboard.keycode, true);
+                personagem_tecla(event.keyboard.keycode, true);
 
-                    interacao_tecla(
-                        event.keyboard.keycode,
-                        personagem_centro_x(),
-                        personagem_centro_y());
-                }
+                interacao_tecla(
+                    event.keyboard.keycode,
+                    personagem_centro_x(),
+                    personagem_centro_y());
             }
         }
+
         // impedir o persongem de continuar andando ao soltar a tecla
         else if (event.type == ALLEGRO_EVENT_KEY_UP)
         {
