@@ -15,6 +15,12 @@ static double inicioVideo = 0;
 // Verifica se a reproducao ja comecou
 static bool videoJaComecou = false;
 
+bool video_esfinge_ativo(void)
+{
+    return videoEsfinge != NULL;
+}
+
+
 void verificar_chaves_templo(void)
 {
     // Verifica se o jogador possui as tres chaves
