@@ -18,6 +18,7 @@
 #include "missaoCasa.h"
 #include "missaoRuinas.h"
 #include "templo.h"
+#include "curiosidades.h"
 
 #define LARGURA_TELA 1300
 #define ALTURA_TELA 800
@@ -350,6 +351,11 @@ int main()
         printf("Erro ao iniciar missao das ruinas!\n");
     }
 
+    if (!iniciar_curiosidades())
+    {
+        printf("Aviso: alguma arte nao foi encontrada!\n");
+    }
+
     al_start_timer(timer);
 
     // Loop principal
@@ -361,6 +367,21 @@ int main()
         if (event.type == ALLEGRO_EVENT_TIMER)
         {
             redraw = true;
+
+        if (estado_atual == ESTADO_MAPA)
+        {
+            float px = personagem_centro_x();
+            float py = personagem_centro_y();
+
+            bool livre =
+                !interacao_aberta() &&
+                !mercado_aberto() &&
+                !casa_aberta() &&
+                !missao_ruinas_aberta() &&
+                !jogador_perto_interacao(px, py);
+
+            atualizar_curiosidades(px, py, livre);
+        }
 
             // Atualiza a animacao do aviso de interacao
             if (estado_atual == ESTADO_MAPA)
@@ -415,7 +436,7 @@ int main()
 
             // Atualizar movimento no mapa
             if (estado_atual == ESTADO_MAPA && !mercado_aberto() && !interacao_aberta() && !casa_aberta() &&
-                !video_esfinge_ativo())
+                !video_esfinge_ativo() && !curiosidades_aberta())
             {
                 // Movimenta a personagem dentro do mundo
                 atualizar_posicao_personagem(LARGURA_MUNDO, ALTURA_MUNDO);
@@ -441,6 +462,27 @@ int main()
             {
                 continue;
             }
+
+            // Interacao com as descobertas historicas
+            if (estado_atual == ESTADO_MAPA)
+            {
+                float px = personagem_centro_x();
+                float py = personagem_centro_y();
+
+                bool livre =
+                    !interacao_aberta() &&
+                    !mercado_aberto() &&
+                    !casa_aberta() &&
+                    !missao_ruinas_aberta() &&
+                    !jogador_perto_interacao(px, py);
+
+                if (curiosidades_tecla(
+                    event.keyboard.keycode, px, py, livre))
+                {
+                    continue;
+                }
+            }
+
             // fecha o jogo ao pressionar esc
             if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
             {
@@ -487,18 +529,21 @@ int main()
             // Registra a tecla pressionada no mapa
             if (estado_atual == ESTADO_MAPA)
             {
+                if (tentar_entrar_templo(event.keyboard.keycode))
+                {
+                    estado_atual = ESTADO_JOGO;
+                }
+                else
+                {
+                    personagem_tecla(event.keyboard.keycode, true);
 
-                // movimento do personagem
-                personagem_tecla(event.keyboard.keycode, true);
-
-                // Verifica se o jogador quer interagir com algum local
-                interacao_tecla(
-                    event.keyboard.keycode,
-                    personagem_centro_x(),
-                    personagem_centro_y());
+                    interacao_tecla(
+                        event.keyboard.keycode,
+                        personagem_centro_x(),
+                        personagem_centro_y());
+                }
             }
         }
-
         // impedir o persongem de continuar andando ao soltar a tecla
         else if (event.type == ALLEGRO_EVENT_KEY_UP)
         {
@@ -878,6 +923,20 @@ int main()
                 {
                     desenhar_contador_chaves(fonte_carta);
                 }
+            // NOVO: Descobertas ilustradas
+            {
+                float px = personagem_centro_x();
+                float py = personagem_centro_y();
+
+                bool livre =
+                    !interacao_aberta() &&
+                    !mercado_aberto() &&
+                    !casa_aberta() &&
+                    !missao_ruinas_aberta() &&
+                    !jogador_perto_interacao(px, py);
+
+                desenhar_curiosidades(fonte_carta, livre);
+            }
             }
 
             al_flip_display(); // esse comando atualiza a imagem
@@ -898,6 +957,7 @@ int main()
     liberar_mercado();
     liberar_casa();
     liberar_missao_ruinas();
+    liberar_curiosidades();
     al_destroy_display(display);
 
     // Libera a imagem do templo - Esse comando evita que a imagem ocupa a memória depos que o jogo fechar

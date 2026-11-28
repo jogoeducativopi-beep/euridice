@@ -342,3 +342,16 @@ bool encontrou_chave_oasis(void)
 {
     return chaveOasisEncontrada;
 }
+
+bool tentar_entrar_templo(int tecla)
+{
+    if (tecla == ALLEGRO_KEY_ENTER &&
+        mostrarAvisoTemplo &&
+        templo_destrancado())
+    {
+        mostrarAvisoTemplo = false;
+        return true;
+    }
+
+    return false;
+}

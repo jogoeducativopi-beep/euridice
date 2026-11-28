@@ -20,6 +20,7 @@
                 "${workspaceFolder}/src/missaoMercado.c",
                 "${workspaceFolder}/src/missaoRuinas.c",
                 "${workspaceFolder}/src/templo.c",
+                "${workspaceFolder}/src/curiosidades.c",
                 "-o",
                 "${workspaceFolder}/telainicio.exe",
                 "-lallegro_video",

@@ -23,4 +23,6 @@ void liberar_interacao(void);
 //se esta com a chave
 bool encontrou_chave_oasis(void);
 
+bool tentar_entrar_templo(int tecla);
+
 #endif
